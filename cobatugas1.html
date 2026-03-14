@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toko Beyyi's Fashion </title>
+
+    <style>
+        /* ===== RESET & DASAR ===== */
+        body {
+          font-family: Arial, sans-serif;
+          font-size: 14px;
+          margin: 0;
+          padding: 0;
+          background-color: #f0f0f0;
+          color: #333;
+        }
+    
+        /* ===== HEADER ===== */
+        header {
+          background-color: #c0392b;
+          color: white;
+          padding: 15px 20px;
+        }
+    
+        header h1 {
+          margin: 0 0 5px 0;
+          font-size: 22px;
+        }
+    
+        header p {
+          margin: 0;
+          font-size: 13px;
+        }
+    
+        /* ===== NAV ===== */
+        nav {
+          background-color: #922b21;
+          padding: 0;
+        }
+    
+        nav ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+        }
+    
+        nav ul li a {
+          display: block;
+          color: white;
+          text-decoration: none;
+          padding: 12px 18px;
+          font-size: 14px;
+        }
+    
+        nav ul li a:hover {
+          background-color: #c0392b;
+        }
+    
+        nav ul li a.aktif {
+          background-color: #e74c3c;
+          font-weight: bold;
+        }
+    
+        /* ===== LAYOUT UTAMA ===== */
+        .wrapper {
+          display: flex;
+          gap: 15px;
+          padding: 15px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+    
+        /* ===== ASIDE / SIDEBAR ===== */
+        aside {
+          width: 200px;
+          flex-shrink: 0;
+        }
+    
+        .kotak-info {
+          background-color: white;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 12px;
+          margin-bottom: 12px;
+        }
+    
+        .kotak-info h3 {
+          background-color: #c0392b;
+          color: white;
+          margin: -12px -12px 10px -12px;
+          padding: 8px 10px;
+          font-size: 13px;
+          border-radius: 4px 4px 0 0;
+        }
+    
+        .kotak-info p {
+          margin: 4px 0;
+          font-size: 13px;
+        }
+    
+        .angka {
+          font-size: 22px;
+          font-weight: bold;
+          color: #c0392b;
+        }
+    
+        /* ===== MAIN ===== */
+        main {
+          flex: 1;
+          min-width: 0;
+        }
+    
+        /* ===== CARD (section berbingkai) ===== */
+        .card {
+          background-color: white;
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          margin-bottom: 15px;
+          overflow: hidden;
+        }
+    
+        /* Header di dalam card */
+        .card-header {
+          background-color: #2980b9;
+          color: white;
+          padding: 12px 16px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+    
+        .card-icon {
+          font-size: 20px;
+        }
+    
+        .card-header h3 {
+          margin: 0 0 3px 0;
+          font-size: 15px;
+        }
+    
+        .card-header p {
+          margin: 0;
+          font-size: 12px;
+          opacity: 0.85;
+        }
+    
+        /* Body di dalam card */
+        .card-body {
+          padding: 16px;
+        }
+    
+        /* ===== FORM GRID (3 kolom) ===== */
+        .form-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px 16px;
+        }
+    
+        /* Span 2 kolom */
+        .form-group.half {
+          grid-column: span 2;
+        }
+    
+        /* Span semua kolom */
+        .form-group.full {
+          grid-column: 1 / -1;
+        }
+    
+        /* ===== FORM GROUP ===== */
+        .form-group {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+    
+        .form-group label {
+          font-size: 12px;
+          font-weight: bold;
+          color: #555;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+    
+        .wajib {
+          color: red;
+          margin-left: 2px;
+        }
+    
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+          padding: 7px 9px;
+          border: 1px solid #bbb;
+          border-radius: 3px;
+          font-size: 13px;
+          font-family: Arial, sans-serif;
+          background-color: #fafafa;
+        }
+    
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+          outline: none;
+          border-color: #2980b9;
+          background-color: white;
+        }
+    
+        .form-group textarea {
+          resize: vertical;
+        }
+    
+        .input-hint {
+          font-size: 11px;
+          color: #888;
+        }
+    
+        /* ===== TOMBOL FORM ===== */
+        .tombol-area {
+          display: flex;
+          justify-content: flex-end;
+          gap: 8px;
+          padding-top: 12px;
+          border-top: 1px solid #eee;
+          margin-top: 12px;
+        }
+    
+        button[type="submit"] {
+          background-color: #c0392b;
+          color: white;
+          border: none;
+          padding: 9px 22px;
+          font-size: 14px;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+    
+        button[type="submit"]:hover {
+          background-color: #a93226;
+        }
+    
+        button[type="reset"] {
+          background-color: #eee;
+          color: #555;
+          border: 1px solid #bbb;
+          padding: 9px 18px;
+          font-size: 14px;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+    
+        button[type="reset"]:hover {
+          background-color: #ddd;
+        }
+    
+        /* ===== SECTION TABEL ===== */
+        .card h2 {
+          margin: 0 0 12px 0;
+          font-size: 15px;
+          color: #c0392b;
+          border-bottom: 2px solid #c0392b;
+          padding-bottom: 6px;
+        }
+    
+        /* ===== TABEL ===== */
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 13px;
+        }
+    
+        thead {
+          background-color: #c0392b;
+          color: white;
+        }
+    
+        thead th {
+          padding: 9px 10px;
+          text-align: left;
+          border: 1px solid #a93226;
+        }
+    
+        tbody tr:nth-child(even) {
+          background-color: #fdf2f2;
+        }
+    
+        tbody tr:hover {
+          background-color: #fde8e8;
+        }
+    
+        tbody td {
+          padding: 8px 10px;
+          border: 1px solid #ddd;
+          vertical-align: middle;
+        }
+    
+        tfoot td {
+          padding: 8px 10px;
+          border: 1px solid #ddd;
+          background-color: #f9f9f9;
+          font-weight: bold;
+          font-size: 12px;
+        }
+    
+        .badge-lunas {
+          background-color: #d5f5e3;
+          color: #1e8449;
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-size: 11px;
+          font-weight: bold;
+        }
+    
+        .badge-dp {
+          background-color: #fdebd0;
+          color: #a04000;
+          padding: 2px 8px;
+          border-radius: 10px;
+          font-size: 11px;
+          font-weight: bold;
+        }
+    
+        .btn-edit {
+          background-color: #2980b9;
+          color: white;
+          border: none;
+          padding: 4px 10px;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 12px;
+        }
+    
+        .btn-hapus {
+          background-color: #c0392b;
+          color: white;
+          border: none;
+          padding: 4px 10px;
+          border-radius: 3px;
+          cursor: pointer;
+          font-size: 12px;
+          margin-left: 4px;
+        }
+    
+        /* ===== FOOTER ===== */
+        footer {
+          background-color: #2c3e50;
+          color: #ccc;
+          text-align: center;
+          padding: 18px 20px;
+          margin-top: 10px;
+          font-size: 13px;
+        }
+    
+        footer strong {
+          color: white;
+        }
+    
+        footer nav ul {
+          list-style: none;
+          padding: 0;
+          margin: 8px 0 0 0;
+          display: flex;
+          justify-content: center;
+          gap: 0;
+          background-color: transparent;
+        }
+    
+        footer nav ul li a {
+          color: #aaa;
+          font-size: 12px;
+          padding: 4px 10px;
+          text-decoration: none;
+        }
+    
+        footer nav ul li a:hover {
+          color: white;
+          text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        
+        <h1>Toko Beyyi's Fashion</h1>
+        <p>Sistem Manajemen Penjualan Baju</p>
+    </header>
+
+    <nav>
+        <ul>
+          <li><a href="#" class="aktif">Beranda</a></li>
+          <li><a href="#">Penjualan</a></li>
+          <li><a href="#">Produk</a></li>
+          <li><a href="#">Pelanggan</a></li>
+          <li><a href="#">Laporan</a></li>
+        </ul>
+      </nav>
+
+    <div class="wrapper">
+
+        <aside>
+
+            <div class="kotak-info">
+                <h3>Pendapatan Hari Ini</h3>
+                <p class="angka">Rp 1,2 Jt</p>
+                <p>dari 8 transaksi</p>
+            </div>
+    
+            <div class="kotak-info">
+                <h3>Terjual Bulan Ini</h3>
+                <p class="angka">342</p>
+                <p>item terjual</p>
+            </div>
+    
+            <div class="kotak-info">
+                <h3>Stok Menipis</h3>
+                <p class="angka" style="color: #e67e22;">5</p>
+                <p>produk perlu restock</p>
+            </div>
+    
+            <div class="kotak-info">
+                <h3>Produk Terlaris</h3>
+                <p><strong>Kemeja Linen</strong></p>
+                <p>128 pcs terjual</p>
+            </div>
+  
+        </aside>
+
+        <main>
+
+            <section class="card" id="form-masuk">
+
+                <header class="card-header">
+                  <div class="card-icon">📥</div>
+                  <div>
+                    <h3 id="form-title">Form Input Barang Masuk</h3>
+                    <p>Lengkapi semua form yang wajib diisi</p>
+                  </div>
+                </header>
+        
+                <div class="card-body">
+                    <form id="formBarangMasuk" novalidate>
+                    <div class="form-grid">
+        
+                        <div class="form-group">
+                        <label for="kodeBarang">Kode Barang <span class="wajib">*</span></label>
+                            <input type="text" id="kodeBarang" name="kodeBarang"
+                                placeholder="cth. BRG-2025-001"
+                                maxlength="20" required />
+                            <span class="input-hint">Kode unik 3–20 karakter</span>
+                        </div>
+        
+                        <div class="form-group half">
+                            <label for="namaBarang">Nama Barang <span class="wajib">*</span></label>
+                            <input type="text" id="namaBarang" name="namaBarang"
+                                placeholder="Masukkan nama barang lengkap"
+                                required />
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="kategori">Kategori <span class="wajib">*</span></label>
+                            <select id="kategori" name="kategori" required>
+                            <option value="" disabled selected>-- Pilih Kategori --</option>
+                            <option value="atasan">Kemeja</option>
+                            <option value="bawahan">Celana</option>
+                            <option value="dress">Dress</option>
+                            <option value="outer">Outer / Jaket</option>
+                            <option value="aksesori">Aksesori</option>
+                            <option value="lainnya">Lainnya</option>
+                            </select>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="jumlah">Jumlah <span class="wajib">*</span></label>
+                            <input type="number" id="jumlah" name="jumlah"
+                                placeholder="0" min="1" max="99999" required />
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="satuan">Satuan <span class="wajib">*</span></label>
+                            <select id="satuan" name="satuan" required>
+                            <option value="" disabled selected>-- Pilih --</option>
+                            <option value="pcs">Pcs (Satuan)</option>
+                            <option value="unit">Unit</option>
+                            <option value="lusin">Lusin</option>
+                            <option value="box">Box / Dus</option>
+                            <option value="set">Set</option>
+                            </select>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="hargaSatuan">Harga Satuan (Rp) <span class="wajib">*</span></label>
+                            <input type="number" id="hargaSatuan" name="hargaSatuan"
+                                placeholder="0" min="0" step="9999999" required />
+                            <span class="input-hint">Harga per satuan unit</span>
+                        </div>
+        
+                        <div class="form-group">
+                            <label for="tanggalMasuk">Tanggal Masuk <span class="wajib">*</span></label>
+                            <input type="date" id="tanggalMasuk" name="tanggalMasuk" required />
+                        </div>
+
+                        <div class="form-group half">
+                            <label for="supplier">Nama Supplier <span class="wajib">*</span></label>
+                            <select id="supplier" name="supplier" required>
+                            <option value="" disabled selected>-- Pilih Supplier --</option>
+                            <option value="PT Baju Baru Keren">PT Baju Baru Keren</option>
+                            <option value="CV Karya Jember Textile">CV Karya Jember Textile</option>
+                            <option value="PT Bloom Fashion">PT Bloom Fashion</option>
+                            <option value="lainnya">Supplier Lainnya…</option>
+                            </select>
+                        </div>
+        
+                        <div class="form-group half">
+                            <label for="fotoBarang">Foto Barang</label>
+                            <input type="file" id="fotoBarang" name="fotoBarang"
+                                accept="image/png, image/jpeg" />
+                            <span class="input-hint">Format: JPG/PNG · Maks. 10MB</span>
+                        </div>
+
+                        <div class="form-group full">
+                            <label for="keterangan">Keterangan Tambahan</label>
+                            <textarea id="keterangan" name="keterangan"
+                                    placeholder="Tulis catatan, kondisi barang, atau informasi tambahan di sini…"
+                                    rows="3"></textarea>
+                        </div>
+                    </div>
+        
+                    <div class="tombol-area">
+                        <button type="reset">Bersihkan Form</button>
+                        <button type="submit">Simpan Data Barang</button>
+                    </div>
+        
+                    </form>
+                </div>
+        
+            </section>
+
+                <section class="card">
+                    <div class="card-body">
+                        <h2>📋 Daftar Penjualan Terbaru</h2>
+                
+                        <table>
+                            <caption style="text-align:left; margin-bottom:8px; font-size:12px; color:#666;">
+                            Menampilkan 5 transaksi terakhir
+                            </caption>
+            
+                        <thead>
+                            <tr>
+                                <th>No. Trx</th>
+                                <th>Tanggal</th>
+                                <th>Pelanggan</th>
+                                <th>Produk</th>
+                                <th>Kategori</th>
+                                <th>Qty</th>
+                                <th>Total</th>
+                                <th>Metode Bayar</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+            
+                        <tbody>
+                            <tr>
+                                <td>TRX-0027</td>
+                                <td><time datetime="2025-06-14">14/06/2025</time></td>
+                                <td>Ahn Keonho</td>
+                                <td>Midi Dress Floral</td>
+                                <td>Dress</td>
+                                <td>2 pcs</td>
+                                <td>Rp 440.000</td>
+                                <td>Shopee</td>
+                                <td><span class="badge-lunas">Lunas</span></td>
+                                <td>
+                                <button class="btn-edit" type="button">Edit</button>
+                                <button class="btn-hapus" type="button">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TRX-0026</td>
+                                <td><time datetime="2025-06-14">14/06/2025</time></td>
+                                <td>James Zhao</td>
+                                <td>Kemeja Linen Putih</td>
+                                <td>Kemeja</td>
+                                <td>1 pcs</td>
+                                <td>Rp 185.000</td>
+                                <td>Tunai</td>
+                                <td><span class="badge-lunas">Lunas</span></td>
+                                <td>
+                                <button class="btn-edit" type="button">Edit</button>
+                                <button class="btn-hapus" type="button">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TRX-0025</td>
+                                <td><time datetime="2025-06-14">14/06/2025</time></td>
+                                <td>Eom Seonghyeon</td>
+                                <td>Blazer Oversize Hitam</td>
+                                <td>Outer / Jaket</td>
+                                <td>2 pcs</td>
+                                <td>Rp 620.000</td>
+                                <td>Transfer Bank</td>
+                                <td><span class="badge-dp">Bayar DP</span></td>
+                                <td>
+                                <button class="btn-edit" type="button">Edit</button>
+                                <button class="btn-hapus" type="button">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TRX-0024</td>
+                                <td><time datetime="2025-06-13">13/06/2025</time></td>
+                                <td>Martin Park</td>
+                                <td>Celana Palazzo Krem</td>
+                                <td>Celana</td>
+                                <td>1 pcs</td>
+                                <td>Rp 175.000</td>
+                                <td>QRIS</td>
+                                <td><span class="badge-lunas">Lunas</span></td>
+                                <td>
+                                <button class="btn-edit" type="button">Edit</button>
+                                <button class="btn-hapus" type="button">Hapus</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>TRX-0023</td>
+                                <td><time datetime="2025-06-13">13/06/2025</time></td>
+                                <td>Kim Juhoon</td>
+                                <td>Cardigan Rajut Krem</td>
+                                <td>Outer / Jaket</td>
+                                <td>3 pcs</td>
+                                <td>Rp 495.000</td>
+                                <td>Tunai</td>
+                                <td><span class="badge-lunas">Lunas</span></td>
+                                <td>
+                                <button class="btn-edit" type="button">Edit</button>
+                                <button class="btn-hapus" type="button">Hapus</button>
+                                </td>
+                            </tr>
+                        </tbody>
+            
+                        <tfoot>
+                            <tr>
+                                <td colspan="7" style="text-align:right;">Total Keseluruhan:</td>
+                                <td colspan="4"><strong>Rp 1.915.000</strong></td>
+                            </tr>
+                        </tfoot>
+            
+                      </table>
+                    </div>
+                  </section>
+        </main>
+    </div>
+
+    <footer>
+        <p><strong>Toko Beyyi's Fashion</strong></p>
+        <p>📍 Jl. Jawa No. 1 Jember | 📞 0812-3456-7890 | ✉ info@tokobeyyi.com</p>
+        <nav>
+          <ul>
+            <li><a href="#">Beranda</a></li>
+            <li><a href="#">Kebijakan Privasi</a></li>
+            <li><a href="#">Syarat &amp; Ketentuan</a></li>
+            <li><a href="#">Hubungi Kami</a></li>
+          </ul>
+        </nav>
+        <p style="margin-top:10px; font-size:12px;"> © 2025 Toko Beyyi's Fashion. Semua hak dilindungi.</p>
+      </footer>
+
+</body>
+</html>
