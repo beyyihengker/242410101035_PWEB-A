@@ -344,16 +344,31 @@
         }
         
         @media(min-width: 1024px) {
-                .hamburger {
-                        display: none; 
-                }
+        .wrapper {
+                flex-direction: row; 
+                align-items: flex-start; 
+
+        }
+        
+        aside {
+                width: 260px; 
+                flex-shrink: 0; 
+        }
+
+        main {
+                flex: 1;
+        }
+
+        .hamburger {
+                display: none; 
+        }
                 
-                .nav-menu {
-                        display: flex; 
-                        flex-direction: row; 
-                        position: static; 
-                        width: auto;
-                        padding: 0;
-                        background: transparent;
+        .nav-menu {
+                display: flex; 
+                flex-direction: row; 
+                position: static; 
+                width: auto;
+                padding: 0;
+                background: transparent;
                 }
         }
