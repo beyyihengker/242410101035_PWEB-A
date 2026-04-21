@@ -11,12 +11,15 @@
 
     <nav>
         <div class="nav-inner">
-
+    
             <div class="nav-brand">
                 <img src="IMG_7126.PNG" alt="Logo BeysWear Fashion">
-                <span class="nav-brand-name">BeysWear</span>
+                <div class="brand-text">
+                    <h1>BeysWear Fashion</h1>
+                    <p>Sistem Manajemen Retail</p>
+                </div>
             </div>
-
+    
             <ul class="nav-menu">
                 <li><a href="#" class="aktif">Beranda</a></li>
                 <li><a href="#">Penjualan</a></li>
@@ -24,53 +27,19 @@
                 <li><a href="#">Laporan</a></li>
                 <li><a href="#">Profil</a></li>
             </ul>
-
+    
             <div class="hamburger" role="button">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
-
+    
         </div>
     </nav>
-
-    <header>
-        <div class="header-inner">
-            <img src="IMG_7126.PNG" alt="Logo BeysWear Fashion" class="header-logo">
-            <div class="header-teks">
-                <h1>BeysWear Fashion</h1>
-                <p>Sistem Manajemen Pengelolaan Retail</p>
-            </div>
-        </div>
-    </header>
 
     <div class="wrapper">
 
         <aside>
-
-            <div class="sb-card">
-                <p class="sb-title">Pendapatan Hari Ini</p>
-                <p class="sb-angka">Rp 1,2 Jt</p>
-                <p class="sb-label">dari 8 transaksi</p>
-            </div>
-
-            <div class="sb-card">
-                <p class="sb-title">Terjual Bulan Ini</p>
-                <p class="sb-angka">342</p>
-                <p class="sb-label">item terjual</p>
-            </div>
-
-            <div class="sb-card">
-                <p class="sb-title">Stok Menipis</p>
-                <p class="sb-angka" style="color:#C06060;">5</p>
-                <p class="sb-label">produk perlu restock</p>
-            </div>
-
-            <div class="sb-card">
-                <p class="sb-title">Produk Terlaris</p>
-                <p style="font-weight:600; font-size:.9rem;">Nevadi Ki Basic Tee</p>
-                <p class="sb-sub" style="margin-top:4px;">128 pcs terjual</p>
-            </div>
 
             <div class="sb-card">
                 <p class="sb-title">Filter Kategori</p>
@@ -78,27 +47,22 @@
                 <div class="filter-row">
                     <input type="checkbox" id="f-Kemeja" checked>
                     <label for="f-Kemeja">Kemeja</label>
-                    <span class="filter-count">58</span>
                 </div>
                 <div class="filter-row">
                     <input type="checkbox" id="f-Celana" checked>
                     <label for="f-Celana">Celana</label>
-                    <span class="filter-count">34</span>
                 </div>
                 <div class="filter-row">
-                    <input type="checkbox" id="f-dress">
-                    <label for="f-dress">Dress</label>
-                    <span class="filter-count">27</span>
+                    <input type="checkbox" id="f-Dress">
+                    <label for="f-Dress">Dress</label>
                 </div>
                 <div class="filter-row">
-                    <input type="checkbox" id="f-outer">
-                    <label for="f-outer">Outer / Jaket</label>
-                    <span class="filter-count">19</span>
+                    <input type="checkbox" id="f-Outer">
+                    <label for="f-Outer">Outer / Jaket</label>
                 </div>
                 <div class="filter-row">
-                    <input type="checkbox" id="f-aksesori">
-                    <label for="f-aksesori">Aksesori</label>
-                    <span class="filter-count">12</span>
+                    <input type="checkbox" id="f-Aksesori">
+                    <label for="f-Aksesori">Aksesori</label>
                 </div>
             </div>
 
@@ -108,23 +72,45 @@
                 <div class="filter-row">
                     <input type="checkbox" id="s-lunas" checked>
                     <label for="s-lunas">Lunas</label>
-                    <span class="filter-count">142</span>
                 </div>
                 <div class="filter-row">
                     <input type="checkbox" id="s-proses">
                     <label for="s-proses">Dalam Proses</label>
-                    <span class="filter-count">8</span>
                 </div>
                 <div class="filter-row">
                     <input type="checkbox" id="s-batal">
                     <label for="s-batal">Dibatalkan</label>
-                    <span class="filter-count">3</span>
                 </div>
             </div>
 
         </aside>
 
     <main>
+
+        <div class="statistik-grid">
+            <div class="sb-card">
+                <p class="sb-title">Total Item</p>
+                <p class="sb-angka" id="totalItem">0</p>
+                <p class="sb-label">jumlah produk</p>
+            </div>
+            
+            <div class="sb-card">
+                <p class="sb-title">Total Penjualan</p>
+                <p class="sb-angka" id="totalPenjualan">Rp 0</p>
+                <p class="sb-label">dari semua transaksi</p>
+            </div>
+            
+            <div class="sb-card">
+                <p class="sb-title">Stok Menipis</p>
+                <p class="sb-angka" id="stokMenipis" style="color:#C06060;">0</p>
+                <p class="sb-label">stok < 5</p>
+            </div>
+
+            <div class="sb-card">
+                <p class="sb-title">Total Produk Terjual</p>
+                <p class="sb-angka" id="totalTerjual">0</p>
+            </div>
+        </div>
 
         <section class="hero-section">
             <h2>Selamat Datang, Beyyi!</h2>
@@ -135,8 +121,8 @@
             <div class="form-row">
 
                 <div class="form-grup">
-                    <label for="cari-nama">Nama Produk</label>
-                    <input type="text" id="cari-nama" placeholder="cth. Basic Tee…">
+                    <label for="searchInput">Nama Produk</label>
+                    <input type="text" id="searchInput" placeholder="cth. Basic Tee…">
                 </div>
 
                 <div class="form-grup">
@@ -161,6 +147,97 @@
             </div>
         </section>
 
+        <section class="form-box">
+            <p class="seksi-label">Tambah / Edit Data</p>
+        
+            <form id="formData" class="form-row">
+        
+                <input type="hidden" id="editIndex">
+        
+                <div class="form-grup">
+                    <input type="text" id="kode" placeholder="Kode Barang" required>
+                </div>
+        
+                <div class="form-grup">
+                    <input type="text" id="nama" placeholder="Nama Produk" required>
+                </div>
+        
+                <div class="form-grup">
+                    <select id="kategoriForm" required>
+                        <option value="">Pilih Kategori</option>
+                        <option>Kemeja</option>
+                        <option>Celana</option>
+                        <option>Dress</option>
+                        <option>Outer / Jaket</option>
+                        <option>Aksesori</option>
+                    </select>
+                </div>
+        
+                <div class="form-grup">
+                    <input type="number" id="stok" placeholder="Stok" required>
+                </div>
+        
+                <div class="form-grup">
+                    <input type="number" id="harga" placeholder="Harga" required>
+                </div>
+        
+                <div class="form-grup">
+                    <input type="date" id="tanggal" required>
+                </div>
+        
+                <button id="btnSimpan" type="button" class="btn btn-primer">Simpan</button>
+        
+            </form>
+        </section>
+
+        <section class="tabel-box">
+            <div class="tabel-header">
+                <h3>Data Produk</h3>
+            </div>
+        
+            <div class="tabel-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Nama</th>
+                            <th>Kategori</th>
+                            <th>Stok</th>
+                            <th>Harga</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+        
+                    <tbody id="dataProduk"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="form-box">
+            <p class="seksi-label">Tambah Transaksi</p>
+        
+            <div class="form-row">
+        
+                <input type="text" id="pelanggan" placeholder="Nama Pelanggan">
+        
+                <select id="produkSelect"></select>
+        
+                <input type="number" id="qty" placeholder="Qty">
+        
+                <select id="status">
+                    <option value="">Pilih Status</option>
+                    <option>Lunas</option>
+                    <option>Proses</option>
+                    <option>Batal</option>
+                </select>
+        
+                <input type="date" id="tanggalJual">
+        
+                <button id="btnTransaksi" class="btn btn-primer">Simpan Transaksi</button>
+        
+            </div>
+        </section>
+
         <section class="tabel-box">
             <div class="tabel-header">
                 <h3 id="lbl-tabel">Daftar Penjualan Terbaru</h3>
@@ -173,7 +250,7 @@
 
                     <thead>
                         <tr>
-                            <th>No. Trx</th>
+                            <th>Kode Trx</th>
                             <th>Tanggal</th>
                             <th>Pelanggan</th>
                             <th>Produk</th>
@@ -184,87 +261,16 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-
-                    <tbody>
-                        <tr>
-                            <td><strong>TRX-027</strong></td>
-                            <td><time datetime="2026-03-12">12/03/2026</time></td>
-                            <td>Ahn Keonho</td>
-                            <td>Nevadi Ki Basic Tee</td>
-                            <td>Kemeja</td>
-                            <td>2 pcs</td>
-                            <td>Rp 220.000</td>
-                            <td><span class="badge badge-lunas">Lunas</span></td>
-                            <td>
-                            <button class="btn-tbl edit"  type="button">Edit</button>
-                            <button class="btn-tbl hapus" type="button">Hapus</button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td><strong>TRX-026</strong></td>
-                            <td><time datetime="2026-03-12">12/03/2026</time></td>
-                            <td>James Zhao</td>
-                            <td>Celana Chino Krem</td>
-                            <td>Celana</td>
-                            <td>1 pcs</td>
-                            <td>Rp 185.000</td>
-                            <td><span class="badge badge-lunas">Lunas</span></td>
-                            <td>
-                            <button class="btn-tbl edit"  type="button">Edit</button>
-                            <button class="btn-tbl hapus" type="button">Hapus</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>TRX-025</strong></td>
-                            <td><time datetime="2026-03-11">11/03/2026</time></td>
-                            <td>Kim Juhoon</td>
-                            <td>Midi Dress Floral</td>
-                            <td>Dress</td>
-                            <td>1 pcs</td>
-                            <td>Rp 240.000</td>
-                            <td><span class="badge badge-proses">Proses</span></td>
-                            <td>
-                            <button class="btn-tbl edit"  type="button">Edit</button>
-                            <button class="btn-tbl hapus" type="button">Hapus</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>TRX-024</strong></td>
-                            <td><time datetime="2026-03-11">11/03/2026</time></td>
-                            <td>Martin Park</td>
-                            <td>Blazer Oversize Navy</td>
-                            <td>Outer</td>
-                            <td>2 pcs</td>
-                            <td>Rp 580.000</td>
-                            <td><span class="badge badge-lunas">Lunas</span></td>
-                            <td>
-                            <button class="btn-tbl edit"  type="button">Edit</button>
-                            <button class="btn-tbl hapus" type="button">Hapus</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>TRX-023</strong></td>
-                            <td><time datetime="2026-03-10">10/03/2026</time></td>
-                            <td>Eom Seonghyeon</td>
-                            <td>Kaos Polo Polos</td>
-                            <td>Kemeja</td>
-                            <td>3 pcs</td>
-                            <td>Rp 330.000</td>
-                            <td><span class="badge badge-lunas">Lunas</span></td>
-                            <td>
-                            <button class="btn-tbl edit"  type="button">Edit</button>
-                            <button class="btn-tbl hapus" type="button">Hapus</button>
-                            </td>
-                        </tr>
-                    </tbody>
+                    
+                    <tbody id="dataPenjualan"></tbody>
 
                     <tfoot>
+
                     <tr>
                         <td colspan="6" style="text-align:right; letter-spacing:.05em;">
                         Total 5 Transaksi:
                         </td>
-                        <td colspan="3">Rp 1.555.000</td>
+                        <td colspan="3" id="totalTransaksi">Rp 0</td>
                     </tr>
                     </tfoot>
                 </table>
@@ -315,5 +321,6 @@
         </p>
     </footer>
 
+    <script src="script.js"></script>
 </body>
 </html>

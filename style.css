@@ -33,8 +33,7 @@
         .nav-inner{
         max-width:1200px;
         margin:auto;
-        padding:0 20px;
-        height:60px;
+        padding:10px 20px;
         display:flex;
         align-items:center;
         justify-content:space-between;
@@ -45,10 +44,21 @@
         align-items:center;
         gap:10px;
         }
-
+            
         .nav-brand img{
-        width:34px;
-        height:34px;
+        width:40px;
+        height:40px;
+        }
+            
+        .brand-text h1{
+        font-size:1rem;
+        color:#E0C58F;
+        font-family:'Cormorant Garamond',serif;
+        }
+            
+        .brand-text p{
+        font-size:.65rem;
+        color:#ccc;
         }
 
         .nav-brand-name{
@@ -57,9 +67,28 @@
         color:#E0C58F ;
         }
 
-        .nav-menu{
-        display:none;
-        gap:10px;
+        .nav-menu {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+        background: #112250;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        padding: 20px;
+        z-index: 100;
+        }
+
+        .nav-menu.active {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: #112250;
+        padding: 10px;
+        border-radius: 8px;
         }
 
         .nav-menu li a{
@@ -89,59 +118,16 @@
         background:#E0C58F ;
         }
 
-        @media(min-width:768px){
-        .nav-menu{display:flex;}
-        .hamburger{display:none;}
-        }
-
-        header{
-        margin-top:60px;
-        background:linear-gradient(135deg,#112250,#3C507D);
-        padding:40px 20px;
-        }
-
-        .header-inner{
-        max-width:1200px;
-        margin:auto;
-        display:flex;
-        align-items:center;
-        gap:20px;
-        animation:fadeSlideUp .6s ease;
-        }
-
-        .header-logo{
-        width:70px;
-        }
-
-        .header-teks h1{
-        font-family:'Cormorant Garamond',serif;
-        font-size:2rem;
-        color:#E0C58F;
-        }
-
-        .header-teks p{
-        color:#ddd;
-        font-size:.85rem;
-        }
-
         .wrapper{
         max-width:1200px;
-        margin:auto;
+        margin:80px auto 0;
         padding:20px;
         display:flex;
         flex-direction:column;
         gap:20px;
         }
 
-        @media(min-width:1024px){
-        .wrapper{flex-direction:row;}
-        }
-
         aside{width:100%;}
-
-        @media(min-width:1024px){
-        aside{width:230px;}
-        }
 
         .sb-card{
         background:#F5F0E9;
@@ -151,6 +137,12 @@
         margin-bottom:12px;
         box-shadow:0 2px 6px rgba(0,0,0,.08);
         animation:fadeSlideUp .4s ease;
+        }
+
+        .sb-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: 0.3s ease;
         }
 
         .sb-title{
@@ -180,12 +172,6 @@
         .filter-row input{
         width:15px;
         height:15px;
-        }
-
-        .filter-count{
-        margin-left:auto;
-        font-size:.7rem;
-        color:#666;
         }
 
         main{
@@ -307,14 +293,6 @@
         gap:30px;
         }
 
-        @media(min-width:600px){
-        .footer-grid{grid-template-columns:repeat(2,1fr);}
-        }
-
-        @media(min-width:900px){
-        .footer-grid{grid-template-columns:repeat(3,1fr);}
-        }
-
         .footer-col h4{
         color:#E0C58F;
         margin-bottom:10px;
@@ -334,4 +312,48 @@
         text-align:center;
         margin-top:20px;
         font-size:.75rem;
+        }
+
+        .statistik-grid {
+        display: grid;
+        grid-template-columns: 1fr; /* HP: 1 kolom */
+        gap: 15px;
+        margin-bottom: 20px;
+        width: 100%;
+        }
+    
+
+        @media(min-width:600px){
+        .footer-grid{grid-template-columns:repeat(2,1fr);}
+        }
+
+        @media(min-width:900px){
+        .footer-grid{grid-template-columns:repeat(3,1fr);}
+        }
+
+        @media (min-width: 768px) {
+        .statistik-grid {
+            grid-template-columns: repeat(2, 1fr); 
+                }
+        }
+    
+        @media (min-width: 1024px) {
+        .statistik-grid {
+            grid-template-columns: repeat(4, 1fr); 
+                }
+        }
+        
+        @media(min-width: 1024px) {
+                .hamburger {
+                        display: none; 
+                }
+                
+                .nav-menu {
+                        display: flex; 
+                        flex-direction: row; 
+                        position: static; 
+                        width: auto;
+                        padding: 0;
+                        background: transparent;
+                }
         }
