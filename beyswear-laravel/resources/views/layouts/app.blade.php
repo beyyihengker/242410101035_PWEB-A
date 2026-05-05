@@ -10,10 +10,27 @@
     @include('partials.navbar')
 
     <div class="page-container">
-        @if(session('success'))
-            <div class="alert alert-success" style="margin-bottom: 20px;">
-                <span>{{ session('success') }}</span>
-                <button onclick="this.parentElement.remove()">×</button>
+        @if (session('success'))
+            <div id="flash-message" class="alert alert-success fixed-popup animate-bounce-in" role="alert">
+                <div style="display: flex; align-items: center;">
+                    <i data-lucide="check-circle" style="width: 18px; margin-right: 10px;"></i>
+                    {{ session('success') }}
+                </div>
+                <button type="button" onclick="document.getElementById('flash-message').remove()">
+                    <i data-lucide="x" style="width: 16px;"></i>
+                </button>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div id="flash-message" class="alert alert-error fixed-popup animate-bounce-in" role="alert">
+                <div style="display: flex; align-items: center;">
+                    <i data-lucide="alert-circle" style="width: 18px; margin-right: 10px;"></i>
+                    {{ session('error') }}
+                </div>
+                <button type="button" onclick="document.getElementById('flash-message').remove()">
+                    <i data-lucide="x" style="width: 16px;"></i>
+                </button>
             </div>
         @endif
 
@@ -49,7 +66,20 @@
         </p>
     </footer>
 
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+        setTimeout(() => {
+            const flash = document.getElementById('flash-message');
+            if (flash) {
+                flash.style.transition = "all 0.6s ease";
+                flash.style.opacity = "0";
+                flash.style.transform = "translateX(50px)";
+
+                setTimeout(() => flash.remove(), 600);
+            }
+        }, 5000);
+    </script>
 
     @stack('scripts')
 

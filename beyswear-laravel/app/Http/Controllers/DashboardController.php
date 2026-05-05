@@ -6,6 +6,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        if (!session()->has('welcome_flash')) {
+            session()->flash('success', 'Selamat datang kembali!');
+            session(['welcome_flash' => true]);
+        }
+
         $statistik = [
             'totalItem' => 25,
             'totalPenjualan' => 1500000,
