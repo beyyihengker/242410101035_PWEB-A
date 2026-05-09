@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ProdukVarian;
 
 class Produk extends Model
 {
-    protected $fillable = ['kode', 'nama', 'ukuran', 'warna', 'kategori', 'harga', 'stok', 'tersedia'];
+    protected $table = 'produks';
+
+    protected $fillable = ['kode', 'nama', 'kategori', 'harga', 'stok', 'foto', 'tersedia'];
 
     protected $casts = [
         'tersedia' => 'boolean',
@@ -19,7 +22,12 @@ class Produk extends Model
     }
 
     public function transaksis()
-{
-    return $this->belongsToMany(Transaksi::class, 'detail_transaksi');
-}
+    {
+        return $this->belongsToMany(Transaksi::class, 'detail_transaksi');
+    }
+
+    public function varians()
+    {
+        return $this->hasMany(ProdukVarian::class);
+    }
 }

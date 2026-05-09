@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        // DAFTARKAN SEMUA ALIAS MIDDLEWARE DI SINI
+        $middleware->alias([
+            'role'  => \App\Http\Middleware\CekRole::class,
+            'admin' => \App\Http\Middleware\CekAdmin::class, // Tambahkan ini sesuai poin 8
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

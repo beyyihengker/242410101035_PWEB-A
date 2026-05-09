@@ -40,22 +40,30 @@
         </div>
 
         <div class="form-grup">
-            <input type="text" placeholder="Nama Produk" disabled>
-        </div>
+            <select id="produkSelect">
 
-        <div class="form-grup">
-            <select id="ukuran">
-                <option value="">Ukuran</option>
-                <option></option>
-                <option></option>
+                <option value="">Pilih Produk</option>
+
+                @foreach($produk as $p)
+
+                    <option value="{{ $p->id }}">
+                        {{ $p->nama }}
+                    </option>
+
+                @endforeach
+
             </select>
         </div>
 
         <div class="form-grup">
-            <select id="ukuran">
-                <option value="">Warna</option>
-                <option></option>
-                <option></option>
+            <select id="warnaSelect">
+                <option value="">Pilih Warna</option>
+            </select>
+        </div>
+
+        <div class="form-grup">
+            <select id="ukuranSelect">
+                <option value="">Pilih Ukuran</option>
             </select>
         </div>
 
@@ -118,5 +126,15 @@
         </table>
     </div>
 </section>
+
+@push('scripts')
+
+<script>
+    window.produkData = @json($produk);
+</script>
+
+<script src="{{ asset('js/script.js') }}"></script>
+
+@endpush
 
 @endsection

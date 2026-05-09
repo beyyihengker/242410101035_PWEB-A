@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::create('produks', function (Blueprint $table) {
             $table->id();
+            $table->string('foto')->nullable();
             $table->string('kode', 10)->unique();
             $table->string('nama', 100);
             $table->enum('ukuran', ['S', 'M', 'L', 'XL']);

@@ -3,14 +3,8 @@
 @section('title', 'Dashboard — BeysWear Fashion')
 
 @section('content')
-
-<section class="hero-section">
-    <div class="hero-overlay">
-        <div class="hero-content">
-            <h2>Selamat Datang di BeysWear</h2>
-        </div>
-    </div>
-</section>
+<div class="container-fluid">
+    <h2 style="color: #112250; margin-bottom: 25px;">Dashboard Utama</h2>
 
     <div class="statistik-grid">
         <x-stat-card judul="Total Item" :nilai="$statistik['totalItem']" />

@@ -5,66 +5,43 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     @stack('styles')
 </head>
-<body>
+<body class="{{ Auth::check() ? 'dashboard-body' : 'landing-page-body' }}">
 
-    @include('partials.navbar')
+    @auth
+        @include('partials.navbar')
+    @endauth
 
-    <div class="page-container">
-        @if (session('success'))
-            <div id="flash-message" class="alert alert-success fixed-popup animate-bounce-in" role="alert">
-                <div style="display: flex; align-items: center;">
-                    <i data-lucide="check-circle" style="width: 18px; margin-right: 10px;"></i>
-                    {{ session('success') }}
-                </div>
-                <button type="button" onclick="document.getElementById('flash-message').remove()">
-                    <i data-lucide="x" style="width: 16px;"></i>
-                </button>
+    @if (session('success'))
+        <div id="flash-message" class="alert alert-success fixed-popup animate-bounce-in" role="alert">
+            <div style="display: flex; align-items: center;">
+                <i data-lucide="check-circle" style="width: 18px; margin-right: 10px;"></i>
+                {{ session('success') }}
             </div>
-        @endif
-
-        @if (session('error'))
-            <div id="flash-message" class="alert alert-error fixed-popup animate-bounce-in" role="alert">
-                <div style="display: flex; align-items: center;">
-                    <i data-lucide="alert-circle" style="width: 18px; margin-right: 10px;"></i>
-                    {{ session('error') }}
-                </div>
-                <button type="button" onclick="document.getElementById('flash-message').remove()">
-                    <i data-lucide="x" style="width: 16px;"></i>
-                </button>
-            </div>
-        @endif
-
-        @yield('content')
-    </div>
-
-    <footer>
-        <div class="footer-grid">
-
-            <div class="footer-col">
-                <h4>BeysWear Fashion</h4>
-                <p> Retail fashion. </p>
-                <p style="margin-top:12px;">
-                    📍 Jl. Jawa No. 1, Jember<br>
-                    📞 0812-3456-7890<br>
-                    ✉ info@beyswear.com
-                </p>
-            </div>
-
-            <div class="footer-col">
-                <h4>Navigasi</h4>
-                <ul>
-                    <li><a href="{{ route('dashboard') }}">Beranda</a></li>
-                    <li><a href="{{ route('penjualan') }}">Penjualan</a></li>
-                    <li><a href="{{ route('produk') }}">Manajemen Produk</a></li>
-                    <li><a href="{{ route('laporan') }}">Laporan & Statistik</a></li>
-                    <li><a href="{{ route('profil') }}">Pengaturan Akun</a></li>
-                </ul>
-            </div>
+            <button type="button" onclick="document.getElementById('flash-message').remove()">
+                <i data-lucide="x" style="width: 16px;"></i>
+            </button>
         </div>
+    @endif
 
-        <p class="footer-bottom"> &copy; 2026 <strong>BeysWear Fashion</strong>. Semua hak dilindungi.
-        </p>
-    </footer>
+    @if (session('error'))
+        <div id="flash-message" class="alert alert-error fixed-popup animate-bounce-in" role="alert">
+            <div style="display: flex; align-items: center;">
+                <i data-lucide="alert-circle" style="width: 18px; margin-right: 10px;"></i>
+                {{ session('error') }}
+            </div>
+            <button type="button" onclick="document.getElementById('flash-message').remove()">
+                <i data-lucide="x" style="width: 16px;"></i>
+            </button>
+        </div>
+    @endif
+
+    <main class="{{ Auth::check() ? 'page-container' : '' }}">
+        @yield('content')
+    </main>
+
+    @Auth
+        @include('partials.footer')
+    @endauth
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
