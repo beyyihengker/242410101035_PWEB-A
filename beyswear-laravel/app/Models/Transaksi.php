@@ -1,17 +1,22 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Transaksi extends Model
 {
-    protected $fillable = ['produk_id','user_id','jumlah_beli','total_harga','pembayaran'];
+    protected $fillable = [
+        'user_id', 'produk_id', 'jumlah_beli',
+        'pembayaran', 'total', 'ukuran', 'warna',
+    ];
 
-    public function produks()
+    public function produk()
     {
-        return $this->belongsToMany(Produk::class, 'detail_transaksi')
-                    ->withPivot('jumlah')
-                    ->withTimestamps();
+        return $this->belongsTo(Produk::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

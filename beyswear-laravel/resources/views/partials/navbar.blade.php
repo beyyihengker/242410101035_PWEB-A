@@ -11,7 +11,7 @@
 
         @auth
             {{-- Sisi Kanan --}}
-            <ul class="nav-menu active">
+            <ul class="nav-menu">
                 <li><a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'aktif' : '' }}">Beranda</a></li>
                 <li><a href="{{ route('penjualan') }}" class="{{ request()->routeIs('penjualan') ? 'aktif' : '' }}">Penjualan</a></li>
                 <li><a href="{{ route('produk.index') }}" class="{{ request()->routeIs('produk.*') ? 'aktif' : '' }}">Produk</a></li>

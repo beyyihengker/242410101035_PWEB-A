@@ -1,79 +1,70 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LaporanController extends Controller
 {
     public function index(Request $request)
     {
-        // Ambil filter bulan & tahun
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
 
-        // Dummy data transaksi
-        $transaksi = [
-            ['kode'=>'TRX-001',
-            'produk'=>'Nevadi Ki Basic Tee',
-            'ukuran'=>'M',
-            'warna'=>'Hitam',
-            'qty'=>'1',
-            'tanggal'=>'2026-04-10',
-            'total'=>220000,
-            'pembayaran'=>'QRIS'
-            ],
-            ['kode'=>'TRX-002',
-            'produk'=>'Celana Chino',
-            'ukuran'=>'L',
-            'warna'=>'Krem',
-            'qty'=>'1',
-            'tanggal'=>'2026-04-11',
-            'total'=>185000,
-            'pembayaran'=>'Cash'
-            ],
-        ];
+        $query = Transaksi::with('produk')
+            ->whereMonth('created_at', $bulan)
+            ->whereYear('created_at', $tahun);
 
-        // FILTER BERDASARKAN BULAN
-        $filtered = array_filter($transaksi, function($t) use ($bulan, $tahun){
-            return date('m', strtotime($t['tanggal'])) == $bulan &&
-                   date('Y', strtotime($t['tanggal'])) == $tahun;
-        });
+        $filtered = $query->get();
 
-        // ========================
-        // HITUNG DATA LAPORAN
-        // ========================
+        $jumlahTransaksi = $filtered->count();
+        $totalOmzet      = $filtered->sum('total');
+        $omzetMingguan   = $jumlahTransaksi ? round($totalOmzet / 4) : 0;
 
-        $jumlahTransaksi = count($filtered);
+        // Produk terlaris
+        $produkCount = $filtered->groupBy('produk_id')
+            ->map(fn($g) => $g->sum('jumlah_beli'))
+            ->sortDesc();
 
-        $totalOmzet = array_sum(array_column($filtered, 'total'));
+        $produkTerlaris = $produkCount->isNotEmpty()
+            ? Transaksi::with('produk')->find($produkCount->keys()->first())?->produk?->nama ?? '-'
+            : '-';
 
-        // omzet mingguan (dibagi 4 sederhana)
-        $omzetMingguan = $jumlahTransaksi ? round($totalOmzet / 4) : 0;
+        $produkKurang = $produkCount->count() > 1
+            ? Transaksi::with('produk')->find($produkCount->keys()->last())?->produk?->nama ?? '-'
+            : '-';
 
-        // hitung produk terlaris
-        $produkCount = [];
-        foreach($filtered as $t){
-            if(!isset($produkCount[$t['produk']])){
-                $produkCount[$t['produk']] = 0;
-            }
-            $produkCount[$t['produk']] += $t['qty'];
-        }
-
-        arsort($produkCount);
-
-        $produkTerlaris = key($produkCount) ?? '-';
-        $produkKurang = count($produkCount) ? array_key_last($produkCount) : '-';
+        // Ringkasan per bulan (untuk grafik/tabel bulanan)
+        $laporanBulanan = Transaksi::select(
+                DB::raw('MONTH(created_at) as bulan_num'),
+                DB::raw('SUM(total) as total_omzet'),
+                DB::raw('COUNT(*) as jumlah_transaksi')
+            )
+            ->whereYear('created_at', $tahun)
+            ->groupBy('bulan_num')
+            ->orderBy('bulan_num')
+            ->get()
+            ->keyBy('bulan_num');
 
         $laporan = [
-            'mingguke'=>'1',
             'jumlahTransaksi' => $jumlahTransaksi,
-            'omzetMingguan' => $omzetMingguan,
-            'produkTerlaris' => $produkTerlaris,
-            'produkKurang' => $produkKurang,
-            'totalOmzet' => $totalOmzet
+            'omzetMingguan'   => $omzetMingguan,
+            'produkTerlaris'  => $produkTerlaris,
+            'produkKurang'    => $produkKurang,
+            'totalOmzet'      => $totalOmzet,
         ];
 
-        return view('laporan', compact('laporan','bulan','tahun'));
+        $namaBulan = [
+            1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'Mei',6=>'Jun',
+            7=>'Jul',8=>'Agu',9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'
+        ];
+
+        $tahunList = range(date('Y'), date('Y') - 3);
+
+        return view('laporan', compact(
+            'laporan', 'bulan', 'tahun',
+            'laporanBulanan', 'namaBulan', 'tahunList'
+        ));
     }
 }

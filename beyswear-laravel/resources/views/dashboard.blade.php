@@ -4,7 +4,6 @@
 
 @section('content')
 <div class="container-fluid">
-    <h2 style="color: #112250; margin-bottom: 25px;">Dashboard Utama</h2>
 
     <div class="statistik-grid">
         <x-stat-card judul="Total Item" :nilai="$statistik['totalItem']" />

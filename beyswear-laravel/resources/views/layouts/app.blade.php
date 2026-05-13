@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     @stack('styles')
 </head>
-<body class="{{ Auth::check() ? 'dashboard-body' : 'landing-page-body' }}">
+< class="{{ Auth::check() ? 'dashboard-body' : 'landing-page-body' }}">
 
     @auth
         @include('partials.navbar')
@@ -43,22 +43,30 @@
         @include('partials.footer')
     @endauth
 
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        lucide.createIcons();
-        setTimeout(() => {
-            const flash = document.getElementById('flash-message');
-            if (flash) {
-                flash.style.transition = "all 0.6s ease";
-                flash.style.opacity = "0";
-                flash.style.transform = "translateX(50px)";
+   {{-- JS utama --}}
+   <script src="{{ asset('js/app.js') }}"></script>
 
-                setTimeout(() => flash.remove(), 600);
-            }
-        }, 5000);
-    </script>
+   {{-- Lucide icons --}}
+   <script src="https://unpkg.com/lucide@latest"></script>
+   <script>
+       document.addEventListener('DOMContentLoaded', function () {
+           lucide.createIcons();
+       });
 
-    @stack('scripts')
+       // Flash message auto hide
+       setTimeout(() => {
+           const flash = document.getElementById('flash-message');
+           if (flash) {
+               flash.style.transition = "all 0.6s ease";
+               flash.style.opacity = "0";
+               flash.style.transform = "translateX(50px)";
+               setTimeout(() => flash.remove(), 600);
+           }
+       }, 5000);
+   </script>
+
+   {{-- Script tambahan dari halaman --}}
+   @stack('scripts')
 
 </body>
 </html>

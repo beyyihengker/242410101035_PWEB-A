@@ -410,39 +410,6 @@ if (produkSelect && ukuranSelect && warnaSelect) {
     });
 }
 
-
-document.addEventListener('DOMContentLoaded', function() {
-    // --- Logika Hamburger Menu ---
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-
-    if (hamburger) {
-        hamburger.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-        });
-    }
-
-    // --- Logika Dropdown Profil (Click outside to close) ---
-    const dropdown = document.querySelector('.dropdown');
-    const dropdownContent = document.querySelector('.dropdown-content');
-
-    if (dropdown) {
-        dropdown.addEventListener('click', function(event) {
-            // Toggle dropdown saat diklik
-            event.stopPropagation();
-            dropdownContent.style.display =
-                dropdownContent.style.display === 'block' ? 'none' : 'block';
-        });
-    }
-
-    // Tutup dropdown jika klik di luar area profil
-    window.addEventListener('click', function() {
-        if (dropdownContent) {
-            dropdownContent.style.display = 'none';
-        }
-    });
-});
-
 function editUser(user) {
     const modal = document.getElementById('userModal');
     const form = document.getElementById('userForm');
@@ -473,28 +440,103 @@ function closeModal() {
     document.getElementById('userModal').style.display = 'none';
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    const avatar = document.querySelector('.avatar-circle');
-    const dropdown = document.querySelector('.dropdown-content');
+// Tambahkan di script.js, setelah populate warna/ukuran
+document.getElementById('produkSelect').addEventListener('change', function () {
+    const idx   = this.value;
+    const produk = window.produkData[idx];
+    const qtyInput = document.getElementById('qty');
+    const stokInfo = document.getElementById('stokInfo');
 
-    if (avatar && dropdown) {
-        avatar.addEventListener('click', function(e) {
-            e.stopPropagation();
-            // Toggle manual agar tidak crash dengan CSS
-            const isVisible = dropdown.style.display === 'block';
-            dropdown.style.display = isVisible ? 'none' : 'block';
+    // ... kode populate warna/ukuran yang sudah ada ...
+
+    if (produk) {
+        qtyInput.max = produk.stok;
+        if (produk.stok === 0) {
+            stokInfo.textContent = '⚠ Stok habis!';
+            stokInfo.style.color = '#c0392b';
+            document.getElementById('btnTransaksi').disabled = true;
+        } else {
+            stokInfo.textContent = `Stok tersedia: ${produk.stok}`;
+            stokInfo.style.color = '#3C507D';
+            document.getElementById('btnTransaksi').disabled = false;
+        }
+    } else {
+        stokInfo.textContent = '';
+        document.getElementById('btnTransaksi').disabled = false;
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // ===== HAMBURGER MENU =====
+    const hamburger = document.querySelector('.hamburger');
+    const navMenu = document.querySelector('.nav-menu');
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function () {
+            navMenu.classList.toggle('active');
         });
     }
 
-    // Tutup dropdown jika klik di luar area profil
-    window.addEventListener('click', function() {
-        if (dropdown) dropdown.style.display = 'none';
-    });
+    // ===== DROPDOWN NAVBAR PROFIL =====
+    const navDropdown = document.getElementById('navDropdown');
+    if (navDropdown) {
+        // Tutup dropdown kalau klik di luar
+        document.addEventListener('click', function (e) {
+            if (!navDropdown.contains(e.target)) {
+                navDropdown.classList.remove('open');
+            }
+        });
+    }
+
+    // ===== DROPDOWN AVATAR (versi lama, kalau masih dipakai) =====
+    const avatar = document.querySelector('.avatar-circle');
+    const dropdown = document.querySelector('.dropdown-content');
+    if (avatar && dropdown) {
+        avatar.addEventListener('click', function (e) {
+            e.stopPropagation();
+            dropdown.style.display =
+                dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+        dropdown.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+        window.addEventListener('click', function () {
+            dropdown.style.display = 'none';
+        });
+    }
+
+    // ===== MODAL USER =====
+    // (fungsi editUser, toggleModal, closeModal tetap di luar DOMContentLoaded
+    //  karena dipanggil dari onclick di HTML)
 });
 
-const hamburger = document.querySelector(".hamburger");
-const navMenu = document.querySelector(".nav-menu");
+// ===== FUNGSI GLOBAL (dipanggil dari HTML onclick) =====
+function toggleDropdown() {
+    const navDropdown = document.getElementById('navDropdown');
+    if (navDropdown) navDropdown.classList.toggle('open');
+}
 
-hamburger.addEventListener("click", () => {
-    navMenu.classList.toggle("active");
-});
+function editUser(user) {
+    const modal = document.getElementById('userModal');
+    const form = document.getElementById('userForm');
+    document.getElementById('modalTitle').innerText = 'Edit User BeysWear';
+    document.getElementById('userName').value = user.name;
+    document.getElementById('userEmail').value = user.email;
+    document.getElementById('userRole').value = user.role;
+    form.action = `/users/${user.id}`;
+    document.getElementById('methodField').innerHTML =
+        '<input type="hidden" name="_method" value="PUT">';
+    modal.style.display = 'block';
+    window.scrollTo({ top: modal.offsetTop - 100, behavior: 'smooth' });
+}
+
+function toggleModal(id) {
+    const modal = document.getElementById(id);
+    modal.style.display =
+        (modal.style.display === 'none' || modal.style.display === '')
+        ? 'block' : 'none';
+}
+
+function closeModal() {
+    document.getElementById('userModal').style.display = 'none';
+}

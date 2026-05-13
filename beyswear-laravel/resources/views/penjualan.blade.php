@@ -40,19 +40,15 @@
         </div>
 
         <div class="form-grup">
-            <select id="produkSelect">
-
+            <select id="produkSelect" name="produk_id">
                 <option value="">Pilih Produk</option>
-
-                @foreach($produk as $p)
-
-                    <option value="{{ $p->id }}">
-                        {{ $p->nama }}
+                @foreach($produkAll as $i => $p)
+                    <option value="{{ $i }}" {{ old('produk_id') == $i ? 'selected' : '' }}>
+                        {{ $p->nama }} @if($p->stok == 0) — HABIS @endif
                     </option>
-
                 @endforeach
-
             </select>
+            <span id="stokInfo" style="font-size:.75rem;margin-top:4px;"></span>
         </div>
 
         <div class="form-grup">
@@ -68,7 +64,12 @@
         </div>
 
         <div class="form-grup">
-            <input type="number" id="qty" placeholder="Qty">
+            <input type="number" id="qty" name="jumlah_beli"
+                placeholder="Qty" min="1"
+                value="{{ old('jumlah_beli') }}">
+            @error('jumlah_beli')
+                <span style="font-size:.75rem;color:#c0392b;">{{ $message }}</span>
+            @enderror
         </div>
 
         <div class="form-grup">

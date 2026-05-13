@@ -1,6 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
+
+use App\Models\Produk;
+use App\Models\Transaksi;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -12,50 +15,29 @@ class DashboardController extends Controller
         }
 
         $statistik = [
-            'totalItem' => 25,
-            'totalPenjualan' => 1500000,
-            'stokMenipis' => 3,
-            'totalTerjual' => 40
+            'totalItem'      => Produk::query()->count(),
+            'totalPenjualan' => Transaksi::query()->sum('total_harga'), // Pastikan kolomnya 'total_harga' sesuai migration
+            'stokMenipis'    => Produk::query()->where('stok', '<', 5)->count(),
+            'totalTerjual'   => Transaksi::query()->sum('jumlah_beli'),
         ];
 
-        $transaksi = [
-            [
-                'kode' => 'TRX-001',
-                'tanggal' => '2026-04-10',
-                'produk' => 'Nevadi Ki Basic Tee',
-                'ukuran' => 'M',
-                'warna' => 'Hitam',
-                'qty' => 2,
-                'total' => 220000,
-                'pembayaran' => 'QRIS'
-            ],
-            [
-                'kode' => 'TRX-002',
-                'tanggal' => '2026-04-11',
-                'produk' => 'Celana Chino',
-                'ukuran' => 'L',
-                'warna' => 'Krem',
-                'qty' => 1,
-                'total' => 185000,
-                'pembayaran' => 'Cash'
-            ]
-        ];
+        $transaksi = Transaksi::query()
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
 
-        $produkTerlaris = [
-            ['nama'=>'Basic Tee','kategori'=>'Kemeja','terjual'=>20],
-            ['nama'=>'Celana Chino','kategori'=>'Celana','terjual'=>15],
-        ];
+        $produkTerlaris = Transaksi::query()
+            ->select('produk_id', DB::raw('SUM(jumlah_beli) as terjual'))
+            ->groupBy('produk_id')
+            ->orderByDesc('terjual')
+            ->take(2)
+            ->get()
+            ->map(fn($t) => [
+                'nama'     => $t->produk->nama ?? '-',
+                'kategori' => $t->produk->kategori ?? '-',
+                'terjual'  => $t->terjual,
+            ]);
 
-        return view('dashboard', compact('statistik','transaksi','produkTerlaris'));
-    }
-
-    public function tentang()
-    {
-        return view('tentang');
-    }
-
-    public function kontak()
-    {
-        return view('kontak');
+        return view('dashboard', compact('statistik', 'transaksi', 'produkTerlaris'));
     }
 }
