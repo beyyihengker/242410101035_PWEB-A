@@ -13,12 +13,19 @@ return new class extends Migration
             $table->string('foto')->nullable();
             $table->string('kode', 10)->unique();
             $table->string('nama', 100);
-            $table->enum('ukuran', ['S', 'M', 'L', 'XL']);
-            $table->string('warna', 30);
-            $table->enum('kategori', ['Kemeja', 'Celana', 'Dress', 'Outer / Jaket', 'Aksesori']);
+
+            $table->enum('kategori', [
+                'Kemeja',
+                'Celana',
+                'Dress',
+                'Outer / Jaket',
+                'Aksesori'
+            ]);
+
             $table->decimal('harga', 12, 2);
-            $table->integer('stok')->default(0);
+
             $table->boolean('tersedia')->default(true);
+
             $table->timestamps();
         });
     }

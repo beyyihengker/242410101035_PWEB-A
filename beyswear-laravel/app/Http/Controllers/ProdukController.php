@@ -9,7 +9,7 @@ class ProdukController extends Controller
 {
     public function index()
     {
-        $produk = Produk::query()->latest()->paginate(10);
+        $produk = Produk::with('varians')->orderBy('kode', 'asc')->paginate(10);
 
         return view('produk.index', compact('produk'));
     }
@@ -19,6 +19,7 @@ class ProdukController extends Controller
         return view('produk.create');
     }
 
+
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -26,7 +27,6 @@ class ProdukController extends Controller
             'nama' => 'required|min:3',
             'kategori' => 'required|in:Kemeja,Celana,Dress,Outer / Jaket,Aksesori',
             'harga' => 'required|numeric|min:1',
-            'stok' => 'required|integer|min:0',
             'foto' => 'nullable|image|mimes:jpg,png|max:2048'
         ]);
 
@@ -64,7 +64,6 @@ class ProdukController extends Controller
             'nama' => 'required|min:3',
             'kategori' => 'required|in:Kemeja,Celana,Dress,Outer / Jaket,Aksesori',
             'harga' => 'required|numeric|min:1',
-            'stok' => 'required|integer|min:0',
             'foto' => 'nullable|image|mimes:jpg,png|max:2048'
         ]);
 
@@ -90,5 +89,17 @@ class ProdukController extends Controller
         $produk->delete();
 
         return redirect()->route('produk.index')->with('success', 'Produk  berhasil dihapus.');
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->input('keyword');
+
+        $produk = Produk::query()
+            ->where('nama', 'LIKE', "%{$keyword}%")
+            ->orWhere('kategori', 'LIKE', "%{$keyword}%")
+            ->get();
+
+        return response()->json($produk);
     }
 }

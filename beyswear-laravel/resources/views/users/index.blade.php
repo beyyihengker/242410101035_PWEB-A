@@ -1,78 +1,191 @@
 @extends('layouts.app')
 
+@section('title', 'Manajemen User — BeysWear Fashion')
+
 @section('content')
-<div class="page-container">
-    <div class="sb-card">
-        <p class="sb-title">MANAJEMEN USER BEYSWEAR</p>
-        <button class="btn btn-primer" onclick="toggleModal('addModal')">+ Tambah User Baru</button>
-    </div>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+<section class="form-box">
+    <h3 class="seksi-label">Tambah User Baru</h3>
 
-    <div class="tabel-box">
-        <div class="tabel-scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $u)
-                    <tr>
-                        <td>{{ $u->name }}</td>
-                        <td>{{ $u->email }}</td>
-                        <td><span class="badge">{{ $u->role }}</span></td>
-                        <td class="aksi-btn">
-                            <button class="btn btn-sekunder" onclick="editUser({{ $u }})">Edit</button>
-                            <form action="{{ route('users.destroy', $u->id) }}" method="POST" onsubmit="return confirm('Hapus user ini secara permanen?')">
-                                @csrf @method('delete')
-                                <button type="submit" class="btn btn-primer" style="background:#c0392b;">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Tambah/Edit (Contoh Sederhana) -->
-<div id="userModal" class="fixed-popup" style="display:none; background:white; padding:20px; border:1px solid #ddd;">
-    <h3 id="modalTitle">Tambah User</h3>
-    <form id="userForm" method="POST" action="{{ route('users.store') }}">
+    <form action="{{ route('users.store') }}" method="POST">
         @csrf
-        <div id="methodField"></div>
-        <div class="form-grup">
-            <label>Nama</label>
-            <input type="text" name="name" id="userName" required>
-        </div>
-        <div class="form-grup">
-            <label>Email</label>
-            <input type="email" name="email" id="userEmail" required>
-        </div>
-        <div class="form-grup">
-            <label>Role</label>
-            <select name="role" id="userRole">
-                <option value="kasir">Kasir</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
-        <div class="form-grup">
-            <label>Password (Kosongkan jika tidak ganti)</label>
-            <input type="password" name="password">
-        </div>
-        <div style="margin-top:15px;">
-            <button type="submit" class="btn btn-primer">Simpan</button>
-            <button type="button" class="btn btn-sekunder" onclick="closeModal()">Batal</button>
+
+        <div class="form-row">
+
+            <div class="form-grup">
+                <input type="text"
+                    name="name"
+                    placeholder="Nama User"
+                    required>
+            </div>
+
+            <div class="form-grup">
+                <input type="email"
+                    name="email"
+                    placeholder="Email"
+                    required>
+            </div>
+
+            <div class="form-grup">
+                <input type="text"
+                    name="no_hp"
+                    placeholder="No HP"
+                    required>
+            </div>
+
+            <input type="hidden"
+                name="role"
+                value="kasir">
+
+            <div class="form-grup">
+                <input type="password"
+                    name="password"
+                    placeholder="Password"
+                    required>
+            </div>
+
+            <button type="submit"
+                class="btn btn-primer">
+                Tambah User
+            </button>
+
         </div>
     </form>
-</div>
+</section>
+
+<section class="form-box">
+
+    <div class="tabel-header">
+        <h3>Data User BeysWear</h3>
+    </div>
+
+    <div class="tabel-scroll">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Email</th>
+                    <th>No HP</th>
+                    <th>Role</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach($users as $u)
+
+                {{-- ROW UTAMA --}}
+                <tr>
+                    <td>{{ $u->name }}</td>
+                    <td>{{ $u->email }}</td>
+                    <td>{{ $u->no_hp }}</td>
+
+                    <td>
+                        <span class="badge">
+                            {{ $u->role }}
+                        </span>
+                    </td>
+
+                    <td class="aksi-btn">
+
+                        <button type="button"
+                            class="btn btn-primer"
+                            onclick="toggleEdit({{ $u->id }})">
+                            Edit
+                        </button>
+
+                        @if($u->role !== 'admin')
+
+                            <form action="{{ route('users.destroy', $u->id) }}"
+                                method="POST"
+                                onsubmit="return confirm('Hapus user ini?')">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                    class="btn btn-primer"
+                                    style="background:#c0392b;">
+                                    Hapus
+                                </button>
+
+                            </form>
+
+                        @else
+
+                            <button type="button"
+                                class="btn btn-sekunder"
+                                disabled>
+                                Admin Tidak Bisa Dihapus
+                            </button>
+
+                        @endif
+
+                    </td>
+                </tr>
+
+                {{-- ROW EDIT --}}
+                <tr id="edit-row-{{ $u->id }}"
+                    style="display:none; background:#f8f9fb;">
+
+                    <td colspan="5">
+
+                        <form action="{{ route('users.update', $u->id) }}"
+                            method="POST">
+
+                            @csrf
+                            @method('PUT')
+
+                            <div class="form-row">
+
+                                <div class="form-grup">
+                                    <input type="text"
+                                        name="name"
+                                        value="{{ $u->name }}"
+                                        required>
+                                </div>
+
+                                <div class="form-grup">
+                                    <input type="email"
+                                        name="email"
+                                        value="{{ $u->email }}"
+                                        required>
+                                </div>
+
+                                <div class="form-grup">
+                                    <input type="text"
+                                        name="no_hp"
+                                        value="{{ $u->no_hp }}"
+                                        required>
+                                </div>
+
+                                <button type="submit"
+                                    class="btn btn-primer">
+                                    Simpan
+                                </button>
+
+                                <button type="button"
+                                    class="btn btn-sekunder"
+                                    onclick="toggleEdit({{ $u->id }})">
+                                    Batal
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </td>
+                </tr>
+
+                @endforeach
+
+            </tbody>
+
+        </table>
+
+    </div>
+</section>
 
 @endsection

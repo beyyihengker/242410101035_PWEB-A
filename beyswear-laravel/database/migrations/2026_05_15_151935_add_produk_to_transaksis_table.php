@@ -11,16 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Menambahkan kolom role setelah kolom email
-            $table->enum('role', ['admin', 'kasir'])->default('kasir')->after('email');
+        Schema::table('transaksis', function (Blueprint $table) {
+
+            $table->string('produk');
+
         });
     }
 
+    /**
+     * Reverse the migrations.
+     */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
+        Schema::table('transaksis', function (Blueprint $table) {
+            //
         });
     }
 };

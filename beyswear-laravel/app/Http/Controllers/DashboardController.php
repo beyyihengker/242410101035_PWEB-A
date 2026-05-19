@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Produk;
 use App\Models\Transaksi;
+use App\Models\ProdukVarian;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -14,11 +16,24 @@ class DashboardController extends Controller
             session(['welcome_flash' => true]);
         }
 
+        $count = session('visit_count', 0);
+
+        session([
+            'visit_count' => $count + 1,
+            'last_visit' => now(),
+        ]);
+
+        if (!session()->has('first_visit')) {
+            session([
+                'first_visit' => now(),
+            ]);
+        }
+
         $statistik = [
-            'totalItem'      => Produk::query()->count(),
-            'totalPenjualan' => Transaksi::query()->sum('total_harga'), // Pastikan kolomnya 'total_harga' sesuai migration
-            'stokMenipis'    => Produk::query()->where('stok', '<', 5)->count(),
-            'totalTerjual'   => Transaksi::query()->sum('jumlah_beli'),
+            'totalItem' => Produk::query()->count(),
+            'totalPenjualan' => Transaksi::query()->where('status', 'berhasil')->sum('total_harga'),
+            'stokMenipis' => ProdukVarian::query()->where('stok', '<', 5)->count(),
+            'totalTerjual' => Transaksi::query()->where('status', 'berhasil')->sum('qty'),
         ];
 
         $transaksi = Transaksi::query()
@@ -27,17 +42,28 @@ class DashboardController extends Controller
             ->get();
 
         $produkTerlaris = Transaksi::query()
-            ->select('produk_id', DB::raw('SUM(jumlah_beli) as terjual'))
-            ->groupBy('produk_id')
+            ->select('produk', DB::raw('SUM(qty) as terjual'))
+            ->groupBy('produk')
             ->orderByDesc('terjual')
             ->take(2)
             ->get()
-            ->map(fn($t) => [
-                'nama'     => $t->produk->nama ?? '-',
-                'kategori' => $t->produk->kategori ?? '-',
-                'terjual'  => $t->terjual,
-            ]);
+            ->map(function ($t) {
+                $produk = Produk::query()->where('nama', '=', $t->produk)->first();
 
-        return view('dashboard', compact('statistik', 'transaksi', 'produkTerlaris'));
+                return [
+                    'nama' => $t->produk,
+                    'kategori' => $produk ? $produk->kategori : '-',
+                    'terjual' => $t->terjual,
+                ];
+            });
+
+        return view('dashboard', [
+            'statistik'      => $statistik,
+            'transaksi'      => $transaksi,
+            'produkTerlaris' => $produkTerlaris,
+            'visit'          => session('visit_count'),
+            'first'          => session('first_visit'),
+            'last'           => session('last_visit'),
+        ]);
     }
 }

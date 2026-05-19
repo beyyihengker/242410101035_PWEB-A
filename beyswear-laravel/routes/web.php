@@ -6,38 +6,53 @@ use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\PenjualanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProdukVarianController;
+use App\Http\Controllers\PreferensiController;
 use Illuminate\Support\Facades\Route;
 
 // 1. Landing Page (Bisa diakses siapa saja)
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', function () {return view('welcome');});
 
 // 2. Semua rute di bawah ini HARUS LOGIN dulu
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/reset-session', function () {session()->forget(['visit_count','first_visit','last_visit']);return back();})->name('reset.session');
 
     // Rute Profil (Nama rute: 'profil' agar tidak error di navbar)
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
     Route::patch('/profil', [ProfilController::class, 'update'])->name('profile.update');
+    Route::patch('/profil/password', [ProfilController::class, 'updatePassword'])->name('profile.password');
+    Route::view('/preferensi', 'preferensi')->name('preferensi');
+    Route::post('/preferensi/save', [PreferensiController::class, 'save'])->name('preferensi.save');
+    Route::get('/preferensi/get',[PreferensiController::class, 'getPreference'])->name('preferensi.get');
+    Route::post('/varian',[ProdukVarianController::class, 'store'])->name('varian.store');
 
     // AKSES BERSAMA (Admin & Kasir)
     Route::middleware('role:admin,kasir')->group(function () {
         Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan');
-        Route::post('/penjualan', [PenjualanController::class, 'store'])->name('penjualan.store'); // Sambungkan ke Produk
+        Route::post('/penjualan', [PenjualanController::class, 'store'])->name('penjualan.store');
+        Route::patch('/penjualan/{transaksi}/cancel', [PenjualanController::class, 'cancel'])->name('penjualan.cancel');
         Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
-        Route::get('/produk/{produk}', [ProdukController::class, 'show'])->name('produk.show');
+        Route::get('/search-produk', [ProdukController::class, 'search']);
     });
 
     // KHUSUS ADMIN
     Route::middleware('role:admin')->group(function () {
-        Route::resource('produk', ProdukController::class)->except(['index', 'show']);
+        Route::get('/produk/create', [ProdukController::class, 'create'])->name('produk.create');
+        Route::post('/produk', [ProdukController::class, 'store'])->name('produk.store');
+        Route::get('/produk/{produk}/edit', [ProdukController::class, 'edit'])->name('produk.edit');
+        Route::put('/produk/{produk}', [ProdukController::class, 'update'])->name('produk.update');
+        Route::delete('/produk/{produk}', [ProdukController::class, 'destroy'])->name('produk.destroy');
         Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan');
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+    });
+
+    Route::middleware('role:admin,kasir')->group(function () {
+        Route::get('/produk/{produk}', [ProdukController::class, 'show'])->name('produk.show');
     });
 });
 

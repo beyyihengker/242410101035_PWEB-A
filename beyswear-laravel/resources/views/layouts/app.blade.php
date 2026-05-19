@@ -2,10 +2,25 @@
 <html>
 <head>
     <title>@yield('title', 'BeysWear Fashion')</title>
+
+    <script>
+
+        if(
+            document.cookie.includes(
+                'theme=dark'
+            )
+        ){
+
+            document.documentElement
+                .classList.add('dark');
+        }
+
+    </script>
+    
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     @stack('styles')
 </head>
-< class="{{ Auth::check() ? 'dashboard-body' : 'landing-page-body' }}">
+<body class="{{ Auth::check() ? 'dashboard-body' : 'landing-page-body' }}">
 
     @auth
         @include('partials.navbar')
@@ -39,12 +54,12 @@
         @yield('content')
     </main>
 
-    @Auth
+    @auth
         @include('partials.footer')
     @endauth
 
    {{-- JS utama --}}
-   <script src="{{ asset('js/app.js') }}"></script>
+   <script src="{{ asset('js/script.js') }}"></script>
 
    {{-- Lucide icons --}}
    <script src="https://unpkg.com/lucide@latest"></script>

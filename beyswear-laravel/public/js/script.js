@@ -1,415 +1,3 @@
-let data = JSON.parse(localStorage.getItem("barang"));
-
-if (!data) {
-    data = [
-        {
-            kode: "BRG-001",
-            nama: "Nevadi Ki Basic Tee",
-            kategori: "Kemeja",
-            stok: 10,
-            harga: 110000
-        },
-        {
-            kode: "BRG-002",
-            nama: "Celana Chino",
-            kategori: "Celana",
-            stok: 3,
-            harga: 185000
-        }
-    ];
-
-    localStorage.setItem("barang", JSON.stringify(data));
-}
-
-let penjualan = JSON.parse(localStorage.getItem("penjualan"));
-
-if (!penjualan) {
-    penjualan = [
-        {
-            kode: "TRX-001",
-            tanggal: "2026-04-10",
-            produk: "Nevadi Ki Basic Tee",
-            Ukuran: "M",
-            warna: "Hitam",
-            kategori: "Kemeja",
-            qty: 2,
-            total: 220000,
-            pembayaran: "Cash"
-        },
-        {
-            kode: "TRX-002",
-            tanggal: "2026-04-11",
-            produk: "Celana Chino",
-            Ukuran: "L",
-            warna: "Krem",
-            kategori: "Celana",
-            qty: 1,
-            total: 185000,
-            pembayaran: "QRIS"
-
-        }
-    ];
-
-    localStorage.setItem("penjualan", JSON.stringify(penjualan));
-}
-
-const produkSelect = document.getElementById("produkSelect");
-const qtyInput = document.getElementById("qty");
-const tanggalJual = document.getElementById("tanggalJual");
-const btnTransaksi = document.getElementById("btnTransaksi");
-const btnTambah = document.getElementById("btnTambah");
-const btnSimpan = document.getElementById("btnSimpan");
-const searchInput = document.getElementById("searchInput");
-
-const renderProduk = (list = data) => {
-    const tbody = document.getElementById("dataProduk");
-    tbody.innerHTML = "";
-
-    list.forEach((item, index) => {
-        tbody.innerHTML += `
-        <tr>
-            <td>${item.kode}</td>
-            <td>${item.nama}</td>
-            <td>${item.kategori}</td>
-            <td>${item.stok}</td>
-            <td>Rp ${item.harga.toLocaleString()}</td>
-            <td>
-                <button class="edit" data-index="${data.indexOf(item)}">Edit</button>
-                <button class="hapus" data-index="${data.indexOf(item)}">Hapus</button>
-            </td>
-        </tr>
-        `;
-    });
-};
-
-const loadProduk = () => {
-    produkSelect.innerHTML = '<option value="">Pilih Produk</option>';
-
-    data.forEach((item, index) => {
-        produkSelect.innerHTML += `
-            <option value="${index}">
-                ${item.nama} (Stok: ${item.stok})
-            </option>
-        `;
-    });
-};
-const kategoriSelect = document.getElementById("cari-kategori");
-
-kategoriSelect.addEventListener("change", () => {
-    const kategori = kategoriSelect.value;
-
-    if(kategori === ""){
-        renderProduk();
-        return;
-    }
-
-    const filtered = data.filter(item => item.kategori === kategori);
-    renderProduk(filtered);
-});
-const hitungStatistik = () => {
-    const totalItem = data.length;
-
-    const totalPenjualan = penjualan.reduce((sum, item) => {
-        return sum + item.total;
-    }, 0);
-
-    const stokMenipis = data.filter(item => item.stok < 5).length;
-
-    const totalTerjual = penjualan.reduce((sum, item) => sum + item.qty, 0);
-
-    document.getElementById("totalItem").innerText = totalItem;
-    document.getElementById("totalPenjualan").innerText = "Rp " + totalPenjualan.toLocaleString();
-    document.getElementById("stokMenipis").innerText = stokMenipis;
-    document.getElementById("totalTerjual").innerText = totalTerjual;
-};
-
-btnSimpan.addEventListener("click", () => {
-    const kode = document.getElementById("kode").value;
-    const nama = document.getElementById("nama").value;
-    const kategori = document.getElementById("kategoriForm").value;
-    const stok = parseInt(document.getElementById("stok").value);
-    const harga = parseInt(document.getElementById("harga").value);
-    const editIndex = document.getElementById("editIndex").value;
-
-    if(!kode || !nama || !kategori || !stok || !harga){
-        alert("Semua field wajib diisi!");
-        return;
-    }
-
-    if(stok <= 0 || harga <= 0){
-        alert("Stok & harga harus lebih dari 0!");
-        return;
-    }
-
-    const produkBaru = { kode, nama, kategori, stok, harga };
-
-    if(editIndex !== ""){
-        data[editIndex] = produkBaru;
-    } else {
-        data.push(produkBaru);
-    }
-
-    localStorage.setItem("barang", JSON.stringify(data));
-
-    document.getElementById("formData").reset();
-    document.getElementById("editIndex").value = "";
-
-    renderProduk();
-    loadProduk();
-    hitungStatistik();
-});
-
-document.getElementById("dataProduk").addEventListener("click", (e) => {
-    const index = e.target.dataset.index;
-
-    if(e.target.classList.contains("hapus")){
-        if(confirm("Hapus produk?")){
-            data.splice(index, 1);
-        }
-    }
-
-    if(e.target.classList.contains("edit")){
-        const item = data[index];
-
-        document.getElementById("kode").value = item.kode;
-        document.getElementById("nama").value = item.nama;
-        document.getElementById("kategoriForm").value = item.kategori;
-        document.getElementById("stok").value = item.stok;
-        document.getElementById("harga").value = item.harga;
-
-        document.getElementById("editIndex").value = index;
-    }
-
-    localStorage.setItem("barang", JSON.stringify(data));
-    renderProduk();
-    loadProduk();
-    hitungStatistik();
-});
-
-searchInput.addEventListener("input", () => {
-    const keyword = searchInput.value.toLowerCase();
-
-    if(keyword === ""){
-        renderProduk();
-        return;
-    }
-
-    const filtered = data.filter(item =>
-        item.nama.toLowerCase().includes(keyword) ||
-        item.kode.toLowerCase().includes(keyword)
-    );
-
-    renderProduk(filtered);
-});
-
-const generateKode = () => {
-    const last = penjualan.length + 1;
-    return "TRX-" + String(last).padStart(3, "0");
-};
-
-btnTransaksi.addEventListener("click", () => {
-
-    if(!produkSelect.value || !qtyInput.value || !tanggalJual.value){
-        alert("Lengkapi data transaksi!");
-        return;
-    }
-
-    const produk = data[produkSelect.value];
-    const qtyBaru = parseInt(qtyInput.value);
-    const editIndex = document.getElementById("editIndexJual").value;
-
-    if(editIndex !== ""){
-        const transaksiLama = penjualan[editIndex];
-
-        const produkLamaIndex = data.findIndex(p => p.nama === transaksiLama.produk);
-        data[produkLamaIndex].stok += transaksiLama.qty;
-
-        if(qtyBaru > produk.stok){
-            alert("Stok tidak cukup!");
-            data[produkLamaIndex].stok -= transaksiLama.qty;
-            return;
-        }
-
-        penjualan[editIndex] = {
-            kode: transaksiLama.kode,
-            tanggal: tanggalJual.value,
-            produk: produk.nama,
-            kategori: produk.kategori,
-            qty: qtyBaru,
-            total: produk.harga * qtyBaru,
-        };
-
-        produk.stok -= qtyBaru;
-
-    } else {
-        if(qtyBaru > produk.stok){
-            alert("Stok tidak cukup!");
-            return;
-        }
-
-        const transaksi = {
-            kode: generateKode(),
-            tanggal: tanggalJual.value,
-            produk: produk.nama,
-            kategori: produk.kategori,
-            qty: qtyBaru,
-            total: produk.harga * qtyBaru,
-        };
-
-        produk.stok -= qtyBaru;
-        penjualan.push(transaksi);
-    }
-
-    localStorage.setItem("penjualan", JSON.stringify(penjualan));
-    localStorage.setItem("barang", JSON.stringify(data));
-
-    clearFormJual();
-    document.getElementById("editIndexJual").value = "";
-
-    renderPenjualan();
-    renderProduk();
-    loadProduk();
-    hitungStatistik();
-});
-
-const renderPenjualan = () => {
-    const tbody = document.getElementById("dataPenjualan");
-    tbody.innerHTML = "";
-
-    const last5 = penjualan.slice(-5).reverse();
-
-    last5.forEach((item, index) => {
-        tbody.innerHTML += `
-        <tr>
-            <td>${item.kode}</td>
-            <td>${new Date(item.tanggal).toLocaleDateString('id-ID')}</td>
-            <td>${item.produk}</td>
-            <td>${item.kategori}</td>
-            <td>${item.qty}</td>
-            <td>Rp ${item.total.toLocaleString()}</td>
-            <td>
-                <div class="aksi-btn">
-                    <button class="btn-tbl editJual" data-index="${index}">Edit</button>
-                    <button class="btn-tbl hapusJual" data-index="${index}">Hapus</button>
-                </div>
-            </td>
-        </tr>
-        `;
-    });
-
-    const total5 = last5.reduce((sum, item) => sum + item.total, 0);
-
-    document.getElementById("totalTransaksi").innerText =
-        "Rp " + total5.toLocaleString();
-};
-
-document.getElementById("dataPenjualan").addEventListener("click", (e) => {
-
-    const index = e.target.dataset.index;
-
-    if(e.target.classList.contains("hapusJual")){
-        if(confirm("Hapus transaksi?")){
-            penjualan.splice(index, 1);
-            localStorage.setItem("penjualan", JSON.stringify(penjualan));
-            renderPenjualan();
-            hitungStatistik();
-        }
-    }
-
-    if(e.target.classList.contains("editJual")){
-        const item = penjualan[index];
-
-        qtyInput.value = item.qty;
-        tanggalJual.value = item.tanggal;
-
-        const produkIndex = data.findIndex(p => p.nama === item.produk);
-        produkSelect.value = produkIndex;
-
-        document.getElementById("editIndexJual").value = index;
-    }
-});
-
-const clearFormJual = () => {
-    produkSelect.value = "";
-    qtyInput.value = "";
-    tanggalJual.value = "";
-    document.getElementById("editIndexJual").value = "";
-};
-
-renderProduk();
-loadProduk();
-renderPenjualan();
-hitungStatistik();
-
-const produkData = window.produkData || [];
-
-const ukuranSelect = document.getElementById('ukuranSelect');
-const warnaSelect = document.getElementById('warnaSelect');
-
-if (produkSelect && ukuranSelect && warnaSelect) {
-
-    produkSelect.addEventListener('change', function () {
-
-        ukuranSelect.innerHTML =
-            '<option value="">Pilih Ukuran</option>';
-
-        warnaSelect.innerHTML =
-            '<option value="">Pilih Warna</option>';
-
-        const produk = produkData.find(
-            p => p.id == this.value
-        );
-
-        if (!produk) return;
-
-        let ukuranUnik = [];
-
-        produk.varians.forEach(v => {
-
-            if (
-                v.stok > 0 &&
-                !ukuranUnik.includes(v.ukuran)
-            ) {
-
-                ukuranUnik.push(v.ukuran);
-
-                ukuranSelect.innerHTML += `
-                    <option value="${v.ukuran}">
-                        ${v.ukuran}
-                    </option>
-                `;
-            }
-        });
-    });
-
-    ukuranSelect.addEventListener('change', function () {
-
-        warnaSelect.innerHTML =
-            '<option value="">Pilih Warna</option>';
-
-        const produk = produkData.find(
-            p => p.id == produkSelect.value
-        );
-
-        if (!produk) return;
-
-        produk.varians.forEach(v => {
-
-            if (
-                v.ukuran == this.value &&
-                v.stok > 0
-            ) {
-
-                warnaSelect.innerHTML += `
-                    <option value="${v.warna}">
-                        ${v.warna}
-                    </option>
-                `;
-            }
-        });
-    });
-}
-
 function editUser(user) {
     const modal = document.getElementById('userModal');
     const form = document.getElementById('userForm');
@@ -440,37 +28,12 @@ function closeModal() {
     document.getElementById('userModal').style.display = 'none';
 }
 
-// Tambahkan di script.js, setelah populate warna/ukuran
-document.getElementById('produkSelect').addEventListener('change', function () {
-    const idx   = this.value;
-    const produk = window.produkData[idx];
-    const qtyInput = document.getElementById('qty');
-    const stokInfo = document.getElementById('stokInfo');
-
-    // ... kode populate warna/ukuran yang sudah ada ...
-
-    if (produk) {
-        qtyInput.max = produk.stok;
-        if (produk.stok === 0) {
-            stokInfo.textContent = '⚠ Stok habis!';
-            stokInfo.style.color = '#c0392b';
-            document.getElementById('btnTransaksi').disabled = true;
-        } else {
-            stokInfo.textContent = `Stok tersedia: ${produk.stok}`;
-            stokInfo.style.color = '#3C507D';
-            document.getElementById('btnTransaksi').disabled = false;
-        }
-    } else {
-        stokInfo.textContent = '';
-        document.getElementById('btnTransaksi').disabled = false;
-    }
-});
-
 document.addEventListener('DOMContentLoaded', function () {
 
     // ===== HAMBURGER MENU =====
     const hamburger = document.querySelector('.hamburger');
     const navMenu = document.querySelector('.nav-menu');
+
     if (hamburger && navMenu) {
         hamburger.addEventListener('click', function () {
             navMenu.classList.toggle('active');
@@ -479,8 +42,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ===== DROPDOWN NAVBAR PROFIL =====
     const navDropdown = document.getElementById('navDropdown');
-    if (navDropdown) {
-        // Tutup dropdown kalau klik di luar
+    const dropdownToggle = document.querySelector('.nav-dropdown-toggle');
+
+    if (navDropdown && dropdownToggle) {
+
+        dropdownToggle.addEventListener('click', function (e) {
+            e.stopPropagation();
+            navDropdown.classList.toggle('open');
+        });
+
+        const dropdownMenu = navDropdown.querySelector('.nav-dropdown-menu');
+
+        if (dropdownMenu) {
+            dropdownMenu.addEventListener('click', function (e) {
+                e.stopPropagation();
+            });
+        }
+
         document.addEventListener('click', function (e) {
             if (!navDropdown.contains(e.target)) {
                 navDropdown.classList.remove('open');
@@ -488,33 +66,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ===== DROPDOWN AVATAR (versi lama, kalau masih dipakai) =====
-    const avatar = document.querySelector('.avatar-circle');
-    const dropdown = document.querySelector('.dropdown-content');
-    if (avatar && dropdown) {
-        avatar.addEventListener('click', function (e) {
-            e.stopPropagation();
-            dropdown.style.display =
-                dropdown.style.display === 'block' ? 'none' : 'block';
-        });
-        dropdown.addEventListener('click', function (e) {
-            e.stopPropagation();
-        });
-        window.addEventListener('click', function () {
-            dropdown.style.display = 'none';
-        });
-    }
-
-    // ===== MODAL USER =====
-    // (fungsi editUser, toggleModal, closeModal tetap di luar DOMContentLoaded
-    //  karena dipanggil dari onclick di HTML)
 });
-
-// ===== FUNGSI GLOBAL (dipanggil dari HTML onclick) =====
-function toggleDropdown() {
-    const navDropdown = document.getElementById('navDropdown');
-    if (navDropdown) navDropdown.classList.toggle('open');
-}
 
 function editUser(user) {
     const modal = document.getElementById('userModal');
@@ -530,13 +82,389 @@ function editUser(user) {
     window.scrollTo({ top: modal.offsetTop - 100, behavior: 'smooth' });
 }
 
-function toggleModal(id) {
-    const modal = document.getElementById(id);
-    modal.style.display =
-        (modal.style.display === 'none' || modal.style.display === '')
-        ? 'block' : 'none';
+async function loadTrendFashion(){
+
+    const container = document.getElementById('trendContainer');
+
+    if(!container) return;
+
+    container.innerHTML =
+        `<div class="loading-box">Loading produk trend...</div>`;
+
+    try{
+
+        const response =
+            await fetch('https://dummyjson.com/products?limit=100');
+
+        const result = await response.json();
+
+        const allowedCategories = [
+            'mens-shirts',
+            'mens-shoes',
+            'mens-watches',
+            'womens-bags',
+            'womens-dresses',
+            'womens-jewellery',
+            'womens-shoes',
+            'womens-watches',
+            'tops',
+            'sunglasses',
+            'beauty',
+            'fragrances',
+            'skin-care'
+        ];
+
+        const data = result.products.filter(item =>
+            allowedCategories.includes(item.category)
+        );
+
+        const randomProducts = data
+            .sort(() => 0.5 - Math.random())
+            .slice(0,4);
+
+        let html = `<div class="trend-grid">`;
+
+        randomProducts.forEach((item, index) => {
+            html += `
+                <div class="trend-card">
+                    <div class="trend-img-wrap">
+                        <span class="trend-rank">
+                            ${String(index + 1).padStart(2,'0')}
+                        </span>
+
+                        <img src="${item.thumbnail}" alt="${item.title}">
+                    </div>
+
+                    <div class="trend-info">
+                        <h4>${item.title}</h4>
+                        <p>${item.category}</p>
+                        <div class="trend-price">$${item.price}</div>
+                    </div>
+                </div>
+            `;
+        });
+
+        html += `</div>`;
+
+        container.innerHTML = html;
+
+    }catch(error){
+
+        container.innerHTML =
+            `<div class="loading-box">Gagal mengambil data trend fashion.</div>`;
+    }
 }
 
-function closeModal() {
-    document.getElementById('userModal').style.display = 'none';
+loadTrendFashion();
+
+const liveSearch =
+    document.getElementById('liveSearch');
+
+if(liveSearch){
+
+    liveSearch.addEventListener(
+        'keyup',
+
+        async function(){
+
+            const keyword = this.value;
+
+            const response =
+                await fetch(
+                    `/search-produk?keyword=${keyword}`
+                );
+
+            const data =
+                await response.json();
+
+            let html = '';
+
+            data.forEach(item => {
+
+                html += `
+                    <tr>
+
+                        <td>${item.kode}</td>
+
+                        <td>${item.nama}</td>
+
+                        <td>${item.kategori}</td>
+
+                        <td>${item.stok}</td>
+
+                        <td>
+                            Rp ${item.harga}
+                        </td>
+
+                    </tr>
+                `;
+            });
+
+            document.getElementById(
+                'dataProduk'
+            ).innerHTML = html;
+        }
+    );
+}
+
+function setCookie(name,value,days){
+
+    let expires = "";
+
+    if(days){
+
+        const date = new Date();
+
+        date.setTime(
+            date.getTime() +
+            (days*24*60*60*1000)
+        );
+
+        expires =
+            "; expires=" +
+            date.toUTCString();
+    }
+
+    document.cookie =
+        name + "=" +
+        value +
+        expires +
+        "; path=/";
+}
+
+function getCookie(name){
+
+    const nameEQ = name + "=";
+
+    const ca =
+        document.cookie.split(';');
+
+    for(let i=0;i<ca.length;i++){
+
+        let c = ca[i];
+
+        while(c.charAt(0)==' '){
+
+            c = c.substring(1);
+        }
+
+        if(c.indexOf(nameEQ)==0){
+
+            return c.substring(
+                nameEQ.length
+            );
+        }
+    }
+
+    return null;
+}
+
+function deleteCookie(name){
+
+    document.cookie =
+        name +
+        '=; Max-Age=-99999999;';
+}
+
+const darkToggle = document.getElementById('darkToggle');
+
+if(darkToggle){
+    darkToggle.addEventListener('click', function(){
+        document.documentElement.classList.toggle('dark');
+
+        if(document.documentElement.classList.contains('dark')){
+            setCookie('theme', 'dark', 7);
+        }else{
+            setCookie('theme', 'light', 7);
+        }
+    });
+}
+
+const savePreferenceBtn =
+    document.getElementById(
+        'savePreference'
+    );
+
+if(savePreferenceBtn){
+
+    savePreferenceBtn.addEventListener(
+        'click',
+
+        async () => {
+
+            const theme =
+                document.getElementById(
+                    'themeSelect'
+                ).value;
+
+            const fontSize =
+                document.getElementById(
+                    'fontSizeSelect'
+                ).value;
+
+            const response = await fetch(
+                '/preferensi/save',
+                {
+                    method: 'POST',
+
+                    headers: {
+                        'Content-Type':
+                            'application/json',
+
+                        'X-CSRF-TOKEN':
+                            document.querySelector(
+                                'meta[name="csrf-token"]'
+                            ).content
+                    },
+
+                    body: JSON.stringify({
+                        theme: theme,
+                        font_size: fontSize
+                    })
+                }
+            );
+
+            const result =
+                await response.json();
+
+            document.getElementById(
+                'prefMessage'
+            ).innerText =
+                result.message;
+        }
+    );
+}
+
+const produkSelect = document.getElementById('produkSelect');
+const ukuranSelect = document.getElementById('ukuranSelect');
+const warnaSelect = document.getElementById('warnaSelect');
+const stokInfo = document.getElementById('stokInfo');
+const kodeInput = document.getElementById('kode');
+const qtyInput = document.getElementById('qty');
+const qtyError = document.getElementById('qtyError');
+const btnTransaksi = document.getElementById('btnTransaksi');
+
+let stokVarianAktif = 0;
+
+if (produkSelect && ukuranSelect && warnaSelect) {
+
+    produkSelect.addEventListener('change', function () {
+        ukuranSelect.innerHTML = '<option value="">Pilih Ukuran</option>';
+        warnaSelect.innerHTML = '<option value="">Pilih Warna</option>';
+
+        stokInfo.textContent = '';
+        qtyError.textContent = '';
+        qtyInput.value = '';
+        qtyInput.removeAttribute('max');
+        stokVarianAktif = 0;
+
+        const produk = window.produkData.find(p => p.id == this.value);
+
+        if (!produk) {
+            kodeInput.value = '';
+            return;
+        }
+
+        kodeInput.value = produk.kode;
+
+        const ukuranUnik = [];
+        let totalStok = 0;
+
+        produk.varians.forEach(v => {
+            totalStok += Number(v.stok);
+
+            if (v.ukuran && v.stok > 0 && !ukuranUnik.includes(v.ukuran)) {
+                ukuranUnik.push(v.ukuran);
+                ukuranSelect.innerHTML += `<option value="${v.ukuran}">${v.ukuran}</option>`;
+            }
+        });
+
+        const warnaTanpaUkuran = produk.varians.filter(v =>
+            !v.ukuran && v.warna && v.stok > 0
+        );
+
+        warnaTanpaUkuran.forEach(v => {
+            warnaSelect.innerHTML += `
+                <option value="${v.warna}" data-stok="${v.stok}">
+                    ${v.warna} | Stok: ${v.stok}
+                </option>
+            `;
+        });
+
+        stokInfo.textContent = `Total stok tersedia: ${totalStok}`;
+    });
+
+    ukuranSelect.addEventListener('change', function () {
+        warnaSelect.innerHTML = '<option value="">Pilih Warna</option>';
+        qtyError.textContent = '';
+        qtyInput.value = '';
+        qtyInput.removeAttribute('max');
+        stokVarianAktif = 0;
+
+        const produk = window.produkData.find(p => p.id == produkSelect.value);
+
+        if (!produk) return;
+
+        produk.varians.forEach(v => {
+            if (v.ukuran == this.value && v.stok > 0) {
+                warnaSelect.innerHTML += `
+                    <option value="${v.warna}" data-stok="${v.stok}">
+                        ${v.warna || '-'} | Stok: ${v.stok}
+                    </option>
+                `;
+            }
+        });
+    });
+
+    warnaSelect.addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        stokVarianAktif = Number(selectedOption.dataset.stok || 0);
+
+        if (stokVarianAktif > 0) {
+            qtyInput.max = stokVarianAktif;
+            stokInfo.textContent = `Stok varian tersedia: ${stokVarianAktif}`;
+        }
+    });
+
+    qtyInput.addEventListener('input', function () {
+        const qty = Number(this.value);
+
+        if (stokVarianAktif > 0 && qty > stokVarianAktif) {
+            qtyError.textContent = `Qty melebihi stok. Stok tersedia hanya ${stokVarianAktif}.`;
+            btnTransaksi.disabled = true;
+        } else {
+            qtyError.textContent = '';
+            btnTransaksi.disabled = false;
+        }
+    });
+}
+
+function toggleEdit(id)
+{
+    const row = document.getElementById('edit-row-' + id);
+
+    if (
+        row.style.display === 'none' ||
+        row.style.display === ''
+    ) {
+        row.style.display = 'table-row';
+    } else {
+        row.style.display = 'none';
+    }
+}
+
+function toggleEditProfil() {
+    const box = document.getElementById('editProfilBox');
+
+    box.style.display =
+        box.style.display === 'none' || box.style.display === ''
+            ? 'block'
+            : 'none';
+
+    if (box.style.display === 'block') {
+        box.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
 }

@@ -53,13 +53,17 @@
                 </thead>
 
                 <tbody>
+                    @foreach($laporanMingguan as $laporan)
+
                     <tr>
-                        <td>{{ $laporan['mingguke'] }}</td>
-                        <td>{{ $laporan['jumlahTransaksi'] }}</td>
-                        <td>Rp {{ number_format($laporan['omzetMingguan']) }}</td>
-                        <td>{{ $laporan['produkTerlaris'] }}</td>
-                        <td>{{ $laporan['produkKurang'] }}</td>
+                        <td>Minggu {{ $laporan->mingguke }}</td>
+                        <td>{{ $laporan->jumlahTransaksi }}</td>
+                        <td>Rp {{ number_format($laporan->omzetMingguan) }}</td>
+                        <td>{{ $produkTerlaris }}</td>
+                        <td>{{ $produkKurang }}</td>
                     </tr>
+
+                    @endforeach
                 </tbody>
 
                 <tfoot>
@@ -67,7 +71,12 @@
                         <td colspan="4" style="text-align:right;">
                             <strong>Total Omzet</strong>
                         </td>
-                        <td>Rp {{ number_format($laporan['totalOmzet']) }}</td>
+
+                        <td colspan="5">
+                            <strong>
+                                Rp {{ number_format($totalOmzet) }}
+                            </strong>
+                        </td>
                     </tr>
                 </tfoot>
 

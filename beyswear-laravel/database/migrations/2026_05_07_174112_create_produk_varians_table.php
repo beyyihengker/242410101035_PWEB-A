@@ -22,8 +22,6 @@ return new class extends Migration
 
             $table->integer('stok');
 
-            $table->decimal('harga', 12, 2);
-
             $table->timestamps();
         });
     }

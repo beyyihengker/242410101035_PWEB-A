@@ -6,8 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 class Transaksi extends Model
 {
     protected $fillable = [
-        'user_id', 'produk_id', 'jumlah_beli',
-        'pembayaran', 'total', 'ukuran', 'warna',
+        'kode_transaksi',
+        'produk',
+        'ukuran',
+        'warna',
+        'qty',
+        'tanggal',
+        'total_harga',
+        'pembayaran',
+        'status',
     ];
 
     public function produk()

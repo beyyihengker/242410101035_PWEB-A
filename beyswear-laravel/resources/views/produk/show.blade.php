@@ -45,12 +45,12 @@
 
             <div class="detail-item">
                 <label>Ukuran Tersedia</label>
-                <textarea rows="3" readonly>{{ $produk->varians->pluck('ukuran')->unique()->implode(', ') }}</textarea>
+                <textarea rows="3" readonly>{{ $produk->varians->pluck('ukuran')->filter()->unique()->implode(', ') ?: '-' }}</textarea>
             </div>
 
             <div class="detail-item">
                 <label>Warna Tersedia</label>
-                <textarea rows="3" readonly>{{ $produk->varians->pluck('warna')->unique()->implode(', ') }}</textarea>
+                <textarea rows="3" readonly>{{ $produk->varians->pluck('warna')->filter()->unique()->implode(', ') ?: '-' }}</textarea>
             </div>
 
         </div>
@@ -81,7 +81,13 @@
             <h3>Tambah Varian Produk</h3>
         </div>
 
-        <form action="{{ route('varian.store') }}"method="POST">
+        @error('varian')
+            <div class="alert alert-error">
+                {{ $message }}
+            </div>
+        @enderror
+
+        <form action="{{ route('varian.store') }}" method="POST">
 
             @csrf
 
@@ -90,8 +96,8 @@
             <div class="form-row">
 
                 <div class="form-grup">
-                    <select name="ukuran" id="cari-ukuran">
-                        <option value="">Ukuran</option>
+                    <select name="ukuran">
+                        <option value="">Ukuran (Opsional)</option>
                         <option value="S">S</option>
                         <option value="M">M</option>
                         <option value="L">L</option>
@@ -101,11 +107,11 @@
 
 
                 <div class="form-grup">
-                    <input type="text" name="warna" placeholder="Masukkan warna">
+                    <input type="text" name="warna" placeholder="Masukkan warna (opsional)">
                 </div>
 
                 <div class="form-grup">
-                    <input type="number" name="stok" placeholder="Masukkan stok">
+                    <input type="number" name="stok" placeholder="Masukkan stok" min="1" required>
                 </div>
 
                 <div class="form-action">
@@ -117,6 +123,55 @@
 
         </form>
 
+    </div>
+
+    <br>
+
+    <div class="tabel-box">
+        <div class="tabel-header">
+            <h3>Stok Tiap Varian</h3>
+            <span class="chip">{{ $produk->varians->count() }} varian</span>
+        </div>
+
+        <div class="tabel-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Ukuran</th>
+                        <th>Warna</th>
+                        <th>Stok</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse($produk->varians as $varian)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $varian->ukuran ?: '-' }}</td>
+                            <td>{{ $varian->warna ?: '-' }}</td>
+                            <td>{{ $varian->stok }} pcs</td>
+                            <td>
+                                @if($varian->stok == 0)
+                                    <span class="chip" style="color:#c0392b;">Habis</span>
+                                @elseif($varian->stok < 5)
+                                    <span class="chip" style="color:#d35400;">Menipis</span>
+                                @else
+                                    <span class="chip" style="color:#1e8449;">Aman</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align:center;">
+                                Belum ada varian produk.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 
 </section>

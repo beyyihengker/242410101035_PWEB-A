@@ -46,14 +46,14 @@
                 <tbody>
                     @forelse($transaksi as $t)
                     <tr>
-                        <td>{{ $t['kode'] }}</td>
-                        <td>{{ \Carbon\Carbon::parse($t['tanggal'])->format('d/m/Y') }}</td>
-                        <td>{{ $t['produk'] }}</td>
-                        <td>{{ $t['ukuran'] }}</td>
-                        <td>{{ $t['warna'] }}</td>
-                        <td>{{ $t['qty'] }}</td>
-                        <td>Rp {{ number_format($t['total']) }}</td>
-                        <td>{{ $t['pembayaran'] }}</td>
+                        <td>{{ $t->kode_transaksi }}</td>
+                        <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d/m/Y') }}</td>
+                        <td>{{ $t->produk }}</td>
+                        <td>{{ $t->ukuran ?? '-' }}</td>
+                        <td>{{ $t->warna ?? '-' }}</td>
+                        <td>{{ $t->qty }}</td>
+                        <td>Rp {{ number_format($t->total_harga, 0, ',', '.') }}</td>
+                        <td>{{ $t->pembayaran }}</td>
                     </tr>
                     @empty
                     <tr>
@@ -84,7 +84,7 @@
                     @forelse($produkTerlaris as $p)
                     <tr>
                         <td>{{ $p['nama'] }}</td>
-                        <td>{{ $p['kategori'] }}</td>
+                        <td>{{ $p['kategori'] ?? '-' }}</td>
                         <td>{{ $p['terjual'] }}</td>
                     </tr>
                     @empty
@@ -97,6 +97,68 @@
         </div>
     </section>
 </div>
+
+<section class="form-box dashboard-section">
+    <div class="section-heading">
+        <div class="section-title-wrap">
+            <div>
+                <h3>Trend Fashion BeysWear</h3>
+                <p>Produk yang sedang banyak diminati</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="trendContainer">
+        <div class="loading-box">Loading produk...</div>
+    </div>
+</section>
+
+<section class="form-box dashboard-section">
+    <div class="section-heading">
+        <div class="section-title-wrap">
+            <div>
+                <h3>Aktivitas Dashboard POS</h3>
+                <p>Statistik kunjungan dashboard</p>
+            </div>
+        </div>
+
+        <form action="{{ route('reset.session') }}" method="POST">
+            @csrf
+            <button class="btn btn-primer reset-btn">
+                Reset Hitungan
+            </button>
+        </form>
+    </div>
+
+    <div class="visit-grid">
+        <div class="visit-card">
+            <div class="visit-icon">👥</div>
+            <div>
+                <p>Total Kunjungan</p>
+                <h2>{{ $visit }}</h2>
+                <span>Jumlah total kunjungan dashboard</span>
+            </div>
+        </div>
+
+        <div class="visit-card">
+            <div class="visit-icon green">📅</div>
+            <div>
+                <p>Kunjungan Pertama</p>
+                <h2>{{ \Carbon\Carbon::parse($first)->format('d M Y') }}</h2>
+                <span>{{ \Carbon\Carbon::parse($first)->format('H:i:s') }}</span>
+            </div>
+        </div>
+
+        <div class="visit-card">
+            <div class="visit-icon purple">📅</div>
+            <div>
+                <p>Kunjungan Terakhir</p>
+                <h2>{{ \Carbon\Carbon::parse($last)->format('d M Y') }}</h2>
+                <span>{{ \Carbon\Carbon::parse($last)->format('H:i:s') }}</span>
+            </div>
+        </div>
+    </div>
+</section>
 
 @push('scripts')
 <script>

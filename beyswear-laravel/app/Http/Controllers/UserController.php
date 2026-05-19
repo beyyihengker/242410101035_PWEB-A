@@ -26,8 +26,9 @@ class UserController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'no_hp' => $request->no_hp,
+            'role' => 'kasir',
+            'password' => bcrypt($request->password),
         ]);
 
         return back()->with('success', 'User baru berhasil ditambahkan!');
@@ -49,15 +50,18 @@ class UserController extends Controller
         return back()->with('success', 'Data user berhasil diperbarui!');
     }
 
-    public function destroy(\App\Models\User $user) // Tambahkan backslash depan App
+    public function destroy(User $user)
     {
-        if (\Illuminate\Support\Facades\Auth::id() === $user->id) {
-            return back()->with('error', 'Anda tidak bisa menghapus akun sendiri!');
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'Kamu tidak bisa menghapus akunmu sendiri.');
         }
 
-        /** @var \App\Models\User $user */
+        if ($user->role === 'admin') {
+            return back()->with('error', 'Akun admin tidak boleh dihapus.');
+        }
+
         $user->delete();
 
-        return back()->with('success', 'User telah dihapus secara permanen!');
+        return back()->with('success', 'User berhasil dihapus.');
     }
 }

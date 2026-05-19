@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
@@ -12,59 +13,88 @@ class LaporanController extends Controller
         $bulan = $request->bulan ?? date('m');
         $tahun = $request->tahun ?? date('Y');
 
-        $query = Transaksi::with('produk')
-            ->whereMonth('created_at', $bulan)
-            ->whereYear('created_at', $tahun);
+        $bulan = $request->input('bulan', date('m'));
+        $tahun = $request->input('tahun', date('Y'));
+
+        $query = Transaksi::query()
+            ->where('status', 'berhasil')
+            ->where(DB::raw('MONTH(created_at)'), '=', $bulan)
+            ->where(DB::raw('YEAR(created_at)'), '=', $tahun);
 
         $filtered = $query->get();
 
         $jumlahTransaksi = $filtered->count();
-        $totalOmzet      = $filtered->sum('total');
-        $omzetMingguan   = $jumlahTransaksi ? round($totalOmzet / 4) : 0;
 
-        // Produk terlaris
-        $produkCount = $filtered->groupBy('produk_id')
-            ->map(fn($g) => $g->sum('jumlah_beli'))
-            ->sortDesc();
+        $totalOmzet = $filtered->sum('total_harga');
 
-        $produkTerlaris = $produkCount->isNotEmpty()
-            ? Transaksi::with('produk')->find($produkCount->keys()->first())?->produk?->nama ?? '-'
-            : '-';
+        $laporanMingguan = Transaksi::query()
+            ->where('status', 'berhasil')
+            ->select(
+                DB::raw('LEAST(CEIL(DAY(created_at) / 7), 4) as mingguke'),
+                DB::raw('COUNT(*) as jumlahTransaksi'),
+                DB::raw('SUM(total_harga) as omzetMingguan')
+            )
+            ->where(DB::raw('MONTH(created_at)'), '=', $bulan)
+            ->where(DB::raw('YEAR(created_at)'), '=', $tahun)
+            ->groupBy('mingguke')
+            ->orderBy('mingguke')
+            ->get();
 
-        $produkKurang = $produkCount->count() > 1
-            ? Transaksi::with('produk')->find($produkCount->keys()->last())?->produk?->nama ?? '-'
-            : '-';
+        $produkTerlaris = $filtered
+            ->groupBy('produk')
+            ->map(fn($item) => $item->sum('qty'))
+            ->sortDesc()
+            ->keys()
+            ->first() ?? '-';
 
-        // Ringkasan per bulan (untuk grafik/tabel bulanan)
-        $laporanBulanan = Transaksi::select(
+        $produkKurang = $filtered
+            ->groupBy('produk')
+            ->map(fn($item) => $item->sum('qty'))
+            ->sort()
+            ->keys()
+            ->first() ?? '-';
+
+        $laporanBulanan = Transaksi::query()
+            ->where('status', 'berhasil')
+            ->select(
                 DB::raw('MONTH(created_at) as bulan_num'),
-                DB::raw('SUM(total) as total_omzet'),
+                DB::raw('SUM(total_harga) as total_omzet'),
                 DB::raw('COUNT(*) as jumlah_transaksi')
             )
-            ->whereYear('created_at', $tahun)
+            ->where(DB::raw('YEAR(created_at)'), '=', $tahun)
             ->groupBy('bulan_num')
             ->orderBy('bulan_num')
             ->get()
             ->keyBy('bulan_num');
 
-        $laporan = [
-            'jumlahTransaksi' => $jumlahTransaksi,
-            'omzetMingguan'   => $omzetMingguan,
-            'produkTerlaris'  => $produkTerlaris,
-            'produkKurang'    => $produkKurang,
-            'totalOmzet'      => $totalOmzet,
-        ];
-
         $namaBulan = [
-            1=>'Jan',2=>'Feb',3=>'Mar',4=>'Apr',5=>'Mei',6=>'Jun',
-            7=>'Jul',8=>'Agu',9=>'Sep',10=>'Okt',11=>'Nov',12=>'Des'
+            1 => 'Jan',
+            2 => 'Feb',
+            3 => 'Mar',
+            4 => 'Apr',
+            5 => 'Mei',
+            6 => 'Jun',
+            7 => 'Jul',
+            8 => 'Agu',
+            9 => 'Sep',
+            10 => 'Okt',
+            11 => 'Nov',
+            12 => 'Des'
         ];
 
         $tahunList = range(date('Y'), date('Y') - 3);
 
         return view('laporan', compact(
-            'laporan', 'bulan', 'tahun',
-            'laporanBulanan', 'namaBulan', 'tahunList'
+            'laporanMingguan',
+            'jumlahTransaksi',
+            'produkTerlaris',
+            'produkKurang',
+            'totalOmzet',
+            'bulan',
+            'tahun',
+            'laporanBulanan',
+            'namaBulan',
+            'tahunList'
         ));
     }
 }

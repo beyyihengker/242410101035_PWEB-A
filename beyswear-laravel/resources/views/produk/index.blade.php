@@ -105,7 +105,7 @@
                                     @csrf
                                     @method('DELETE')
 
-                                    <button type="submit" class="btn btn-primer" onclick="return confirm('Yakin hapus produk?')">Hapus</button>
+                                    <button type="submit" class="btn btn-primer" style="background:#c0392b;" onclick="return confirm('Yakin hapus produk?')">Hapus</button>
 
                                 </form>
 
@@ -126,8 +126,6 @@
         <div class="pagination-box">
             {{ $produk->links() }}
         </div>
-
-    </div>
 
 </section>
 

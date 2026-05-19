@@ -37,10 +37,6 @@
                 </div>
 
                 <div class="form-grup">
-                    <input type="number" name="stok" value="{{ old('stok') }}" placeholder="Masukkan stok produk">
-                </div>
-
-                <div class="form-grup">
                     <input type="file" name="foto">
                 </div>
 
