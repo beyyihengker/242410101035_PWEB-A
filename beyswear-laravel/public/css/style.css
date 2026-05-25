@@ -22,6 +22,7 @@ min-height: 100vh;
 display: flex;
 flex-direction: column;
 margin: 0;
+transform-origin: top left;
 }
 
 main.page-container{
@@ -398,6 +399,11 @@ th,td{
 padding:10px;
 border-bottom:1px solid #D9CBC2;
 text-align: left;
+vertical-align: top;
+}
+
+.multi-item div{
+    margin-bottom: 4px;
 }
 
 .chip {
@@ -405,6 +411,23 @@ text-align: left;
     padding: 5px 10px;
     border-radius: 10px;
     font-size: 12px;
+    text-align: center;
+}
+
+.status-cell{
+    text-align: center;
+    vertical-align: middle;
+}
+
+.status-badge{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 80px;
+}
+
+.text-center{
+    text-align:center;
 }
 
 tbody tr:nth-child(even){
@@ -609,6 +632,30 @@ th:last-child {
 .aksi-btn .btn {
     white-space: nowrap;
     }
+
+td.aksi-btn{
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+td.aksi-btn form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+td.aksi-btn .btn{
+    min-width: 95px;
+}
+
+table td {
+    vertical-align: middle;
+}
+
+table td div {
+    line-height: 1.6;
+}
 
 a.btn {
 text-decoration: none;
@@ -1197,10 +1244,10 @@ font-size:.75rem;
 
 /* Jarak aman agar konten Dashboard tidak tertutup Navbar */
 .dashboard-body .page-container {
-    margin-top: 90px !important; /* Memberi ruang di bawah navbar */
+    margin-top: 90px !important;
     padding: 20px;
-    background-color: #f4f7f6; /* Warna latar belakang dashboard yang bersih */
-    min-height: calc(100vh - 70px - 260px);;
+    background-color: #f4f7f6;
+    min-height: calc(100vh - 70px - 260px);
 }
 
 html.dark .dashboard-body .page-container{
@@ -1210,7 +1257,8 @@ html.dark .dashboard-body .page-container{
 .landing-page-body {
     margin: 0 !important;
     padding: 0 !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
     width: 100vw;
     height: 100vh;
 }
@@ -1239,11 +1287,13 @@ html.dark .dashboard-body .page-container{
 }
 
 .hero-fullscreen {
-    position: fixed;
+    position: relative;
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    position:relative;
+    width:100%;
+    min-height:100vh;
     background-image: url('/images/hero.jpg');
     background-size: cover;
     background-position: center;
@@ -1311,6 +1361,212 @@ html.dark .dashboard-body .page-container{
     }
 }
 
+.header-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.header-link{
+    font-weight:600;
+    color:#1C1C2E;
+    transition:.2s;
+}
+
+.header-link:hover{
+    color:#3C507D;
+}
+
+.header-divider{
+    color:#999;
+    font-weight:500;
+}
+
+.hero-fullscreen{
+    position: relative;
+}
+
+.login-karyawan-link{
+    display:block;
+    margin-top:14px;
+    color:#E0C58F;
+    font-size:.85rem;
+    opacity:.8;
+}
+
+.login-karyawan-link:hover{
+    opacity:1;
+    text-decoration:underline;
+}
+
+.catalog-section{
+    padding:100px 20px;
+    background:#f5f6fa;
+}
+
+.catalog-header{
+    text-align:center;
+    margin-bottom:50px;
+}
+
+.catalog-header h2{
+    font-size:2.4rem;
+    color:#112250;
+    margin-bottom:10px;
+}
+
+.catalog-header p{
+    color:#666;
+}
+
+.catalog-grid{
+    max-width:1200px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:26px;
+}
+
+.catalog-card{
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.catalog-card:hover{
+    transform:translateY(-6px);
+}
+
+.catalog-image{
+    height:300px;
+    background:#f3f3f3;
+}
+
+.catalog-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.catalog-no-image{
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#777;
+}
+
+.catalog-content{
+    padding:18px;
+}
+
+.catalog-category{
+    display:inline-block;
+    background:#eef2ff;
+    color:#3C507D;
+    padding:5px 10px;
+    border-radius:999px;
+    font-size:.75rem;
+    margin-bottom:10px;
+}
+
+.catalog-content h3{
+    color:#112250;
+    margin-bottom:8px;
+}
+
+.catalog-content h4{
+    color:#3C507D;
+}
+
+.wa-floating{
+    position:fixed;
+    right:24px;
+    bottom:24px;
+    width:72px;
+    height:72px;
+    z-index:9999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.wa-logo{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    border-radius:50%;
+    box-shadow:0 6px 18px rgba(0,0,0,.25);
+    transition:.3s ease;
+}
+
+.wa-logo:hover{
+    transform:scale(1.08);
+}
+
+.wa-badge{
+    position:absolute;
+    top:2px;
+    right:2px;
+    width:16px;
+    height:16px;
+    background:#ff4d4f;
+    border:3px solid white;
+    border-radius:50%;
+}
+
+.wa-tooltip{
+    position:absolute;
+    right:85px;
+    background:white;
+    color:#112250;
+    padding:10px 14px;
+    border-radius:12px;
+    font-size:.82rem;
+    font-weight:600;
+    white-space:nowrap;
+    opacity:0;
+    transform:translateY(10px);
+    transition:.3s ease;
+    box-shadow:0 6px 16px rgba(0,0,0,.15);
+}
+
+.wa-floating:hover .wa-tooltip{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.landing-footer{
+    background:#112250;
+    color:#ddd;
+    text-align:center;
+    padding:35px 20px;
+}
+
+.landing-footer h3{
+    color:#E0C58F;
+    margin-bottom:8px;
+}
+
+@media(max-width:768px){
+    .catalog-grid{
+        grid-template-columns:1fr;
+    }
+
+    .wa-floating{
+        width:60px;
+        height:60px;
+        right:20px;
+        bottom:20px;
+    }
+
+    .wa-tooltip{
+        display:none;
+    }
+}
+
 @media(min-width: 1024px) {
     .wrapper {
     flex-direction: row;
@@ -1333,5 +1589,448 @@ html.dark .dashboard-body .page-container{
     width: auto;
     padding: 0;
     background: transparent;
+    }
+}
+
+:root{
+    --font-scale:1;
+}
+
+.font-small{
+    --font-scale:0.9;
+}
+
+.font-medium{
+    --font-scale:1;
+}
+
+.font-large{
+    --font-scale:1.1;
+}
+
+body.font-small{
+    zoom:90%;
+}
+
+body.font-medium{
+    zoom:100%;
+}
+
+body.font-large{
+    zoom:110%;
+}
+
+.nav-pref-wrap{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 16px;
+}
+
+.pref-btn{
+    background:none;
+    border:none;
+    color:#ddd;
+    cursor:pointer;
+    font-size:1rem;
+    font-weight:700;
+    font-family:'Cormorant Garamond', serif;
+    transition:.2s;
+}
+
+.pref-btn:hover{
+    color:#E0C58F;
+}
+
+/* ===== LANDING KATALOG ===== */
+
+.landing-katalog{
+    padding:80px 20px;
+    background:#f5f6fa;
+}
+
+.landing-header{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.landing-header h2{
+    font-size:2rem;
+    color:#112250;
+    margin-bottom:10px;
+}
+
+.landing-header p{
+    color:#666;
+}
+
+.landing-grid{
+    max-width:1200px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:24px;
+}
+
+.landing-card{
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.landing-card:hover{
+    transform:translateY(-6px);
+}
+
+.landing-image{
+    width:100%;
+    height:280px;
+    background:#f3f3f3;
+}
+
+.landing-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.landing-no-image{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#777;
+}
+
+.landing-content{
+    padding:18px;
+}
+
+.landing-content h3{
+    color:#112250;
+    margin-bottom:8px;
+}
+
+.landing-category{
+    display:inline-block;
+    margin-bottom:10px;
+    font-size:.8rem;
+    background:#eef2ff;
+    color:#3C507D;
+    padding:5px 10px;
+    border-radius:999px;
+}
+
+.landing-content h4{
+    color:#112250;
+    font-size:1.1rem;
+}
+
+.catalog-varian{
+    font-size:.82rem;
+    color:#666;
+    margin-top:6px;
+}
+
+
+/* ===== STRUK TRANSAKSI ===== */
+
+.struk-page{
+    background:#f5f5f5;
+    min-height:100vh;
+    padding:30px 20px;
+}
+
+.struk{
+    width:320px;
+    margin:auto;
+    background:white;
+    padding:18px;
+    border-radius:10px;
+    box-shadow:0 4px 14px rgba(0,0,0,.12);
+}
+
+.struk-center{
+    text-align:center;
+}
+
+.struk-title{
+    margin:0;
+    font-size:20px;
+    color:#112250;
+}
+
+.struk-text{
+    margin:4px 0;
+    font-size:12px;
+}
+
+.struk-line{
+    border-top:1px dashed #999;
+    margin:12px 0;
+}
+
+.struk-item{
+    margin-bottom:10px;
+}
+
+.struk-item-name{
+    font-size:13px;
+    font-weight:700;
+}
+
+.struk-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    gap:10px;
+}
+
+.struk-total{
+    font-weight:700;
+    font-size:15px;
+}
+
+.btn-print{
+    display:block;
+    width:320px;
+    margin:20px auto;
+}
+
+@media print{
+
+    body{
+        background:white;
+    }
+
+    .btn-print{
+        display:none;
+    }
+
+    .struk{
+        box-shadow:none;
+        border-radius:0;
+    }
+
+    .struk-page{
+        padding:0;
+    }
+}
+
+/* ===== RESPONSIVE MOBILE ===== */
+
+@media (max-width: 768px) {
+
+    body {
+        font-size: 14px;
+    }
+
+    .page-container,
+    .dashboard-body .page-container {
+        margin-top: 85px !important;
+        padding: 15px;
+        gap: 15px;
+    }
+
+    .nav-inner {
+        height: 70px;
+        padding: 10px 15px;
+    }
+
+    .nav-menu {
+        display: none;
+    }
+
+    .nav-menu.active {
+        display: flex !important;
+        flex-direction: column;
+        position: absolute;
+        top: 70px;
+        right: 15px;
+        width: 230px;
+        background: #112250;
+        padding: 12px;
+        border-radius: 10px;
+        gap: 8px;
+    }
+
+    .hamburger {
+        display: flex !important;
+        margin-left: auto;
+    }
+
+    .statistik-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-grup {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .form-action,
+    .form-row > button,
+    .form-row > a {
+        width: 100%;
+    }
+
+    .btn,
+    .btn-primer,
+    .btn-sekunder {
+        width: 100%;
+    }
+
+    .tabel-box,
+    .form-box,
+    .sb-card {
+        padding: 15px;
+        border-radius: 12px;
+    }
+
+    .tabel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .tabel-scroll {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 850px;
+        font-size: 0.78rem;
+    }
+
+    th,
+    td {
+        padding: 8px;
+        white-space: nowrap;
+    }
+
+    .aksi-btn {
+        min-width: 180px;
+        gap: 6px;
+    }
+
+    td.aksi-btn .btn {
+        width: auto;
+        min-width: 80px;
+    }
+
+    .detail-container {
+        flex-direction: column;
+    }
+
+    .detail-kanan {
+        gap: 18px;
+    }
+
+    .detail-foto,
+    .foto-kosong {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .container-profil {
+        margin: 20px auto;
+        padding: 0 15px;
+    }
+
+    .profil-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .visit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .trend-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .trend-img-wrap {
+        width: 100%;
+        height: 180px;
+    }
+
+    .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 25px;
+    }
+
+    .footer-col {
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .brand-text h1 {
+        font-size: 0.85rem;
+    }
+
+    .brand-text p {
+        font-size: 0.6rem;
+    }
+
+    .nav-brand img {
+        width: 34px;
+        height: 34px;
+    }
+
+    .hero-content h2 {
+        font-size: 30px;
+    }
+
+    .sb-angka {
+        font-size: 1.4rem;
+    }
+
+    .card-profil {
+        padding: 20px;
+    }
+
+    .avatar-big {
+        width: 65px;
+        height: 65px;
+        font-size: 1.6rem;
+    }
+
+    table {
+        min-width: 760px;
+    }
+
+    .landing-katalog{
+        padding:60px 15px;
+    }
+
+    .landing-grid{
+        grid-template-columns:1fr;
+    }
+
+    .landing-image{
+        height:220px;
     }
 }

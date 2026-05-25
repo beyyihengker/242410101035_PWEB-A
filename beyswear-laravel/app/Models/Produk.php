@@ -3,13 +3,24 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\ProdukVarian;
 
 class Produk extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'produks';
 
-    protected $fillable = ['kode', 'nama', 'kategori', 'harga', 'stok', 'foto', 'tersedia'];
+    protected $fillable = [
+        'kode',
+        'nama',
+        'kategori',
+        'harga',
+        'stok',
+        'foto',
+        'tersedia'
+    ];
 
     protected $casts = [
         'tersedia' => 'boolean',
@@ -23,7 +34,10 @@ class Produk extends Model
 
     public function transaksis()
     {
-        return $this->belongsToMany(Transaksi::class, 'detail_transaksi');
+        return $this->belongsToMany(
+            Transaksi::class,
+            'detail_transaksi'
+        );
     }
 
     public function varians()

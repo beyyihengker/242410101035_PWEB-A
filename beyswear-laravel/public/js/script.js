@@ -280,59 +280,55 @@ if(darkToggle){
     });
 }
 
-const savePreferenceBtn =
-    document.getElementById(
-        'savePreference'
-    );
+const savePrefBtn = document.getElementById('savePref');
 
-if(savePreferenceBtn){
+if (savePrefBtn) {
+    savePrefBtn.addEventListener('click', async function () {
+        const theme = document.getElementById('tema').value;
+        const fontSize = document.getElementById('fontSize').value;
 
-    savePreferenceBtn.addEventListener(
-        'click',
+        const response = await fetch('/preferensi/save', {
+            method: 'POST',
 
-        async () => {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]')
+                    .content
+            },
 
-            const theme =
-                document.getElementById(
-                    'themeSelect'
-                ).value;
+            body: JSON.stringify({
+                theme: theme,
+                font_size: fontSize
+            })
+        });
 
-            const fontSize =
-                document.getElementById(
-                    'fontSizeSelect'
-                ).value;
+        const result = await response.json();
 
-            const response = await fetch(
-                '/preferensi/save',
-                {
-                    method: 'POST',
+        alert(result.message);
 
-                    headers: {
-                        'Content-Type':
-                            'application/json',
+        document.documentElement.classList.remove('dark');
 
-                        'X-CSRF-TOKEN':
-                            document.querySelector(
-                                'meta[name="csrf-token"]'
-                            ).content
-                    },
-
-                    body: JSON.stringify({
-                        theme: theme,
-                        font_size: fontSize
-                    })
-                }
-            );
-
-            const result =
-                await response.json();
-
-            document.getElementById(
-                'prefMessage'
-            ).innerText =
-                result.message;
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
         }
-    );
+
+        if (theme === 'system') {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (prefersDark) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        document.body.classList.remove(
+            'font-small',
+            'font-medium',
+            'font-large'
+        );
+
+        document.body.classList.add('font-' + fontSize);
+    });
 }
 
 const produkSelect = document.getElementById('produkSelect');
@@ -467,4 +463,242 @@ function toggleEditProfil() {
             block: 'start'
         });
     }
+}
+
+let cart = [];
+
+const btnAddCart = document.getElementById('btnAddCart');
+const cartTable = document.getElementById('cartTable');
+const cartInputs = document.getElementById('cartInputs');
+
+if (btnAddCart) {
+    btnAddCart.addEventListener('click', function () {
+        const produkId = produkSelect.value;
+        const ukuran = ukuranSelect.value;
+        const warna = warnaSelect.value;
+        const qty = Number(qtyInput.value);
+
+        const produk = window.produkData.find(p => p.id == produkId);
+
+        if (!produk) {
+            alert('Pilih produk dulu.');
+            return;
+        }
+
+        if (!ukuran && !warna) {
+            alert('Pilih ukuran atau warna.');
+            return;
+        }
+
+        if (!qty || qty < 1) {
+            alert('Qty wajib diisi.');
+            return;
+        }
+
+        if (stokVarianAktif > 0 && qty > stokVarianAktif) {
+            alert(`Qty melebihi stok. Stok tersedia ${stokVarianAktif}.`);
+            return;
+        }
+
+        const subtotal = Number(produk.harga) * qty;
+
+        cart.push({
+            produk_id: produkId,
+            produk: produk.nama,
+            ukuran: ukuran,
+            warna: warna,
+            qty: qty,
+            harga: Number(produk.harga),
+            subtotal: subtotal
+        });
+
+        renderCart();
+
+        produkSelect.value = '';
+        ukuranSelect.innerHTML = '<option value="">Pilih Ukuran</option>';
+        warnaSelect.innerHTML = '<option value="">Pilih Warna</option>';
+        qtyInput.value = '';
+        kodeInput.value = '';
+        stokInfo.textContent = '';
+    });
+}
+
+function renderCart() {
+    if (!cartTable || !cartInputs) return;
+
+    if (cart.length === 0) {
+        cartTable.innerHTML = `
+            <tr>
+                <td colspan="7" style="text-align:center;">Belum ada item.</td>
+            </tr>
+        `;
+
+        cartInputs.innerHTML = '';
+        return;
+    }
+
+    let tableHtml = '';
+    let inputHtml = '';
+
+    cart.forEach((item, index) => {
+        tableHtml += `
+            <tr>
+                <td>${item.produk}</td>
+                <td>${item.ukuran || '-'}</td>
+                <td>${item.warna || '-'}</td>
+                <td>${item.qty}</td>
+                <td>Rp ${item.harga.toLocaleString('id-ID')}</td>
+                <td>Rp ${item.subtotal.toLocaleString('id-ID')}</td>
+                <td class="aksi-btn">
+                    <button type="button" class="btn btn-primer" style="background:#c0392b;" onclick="removeCartItem(${index})">
+                        Hapus
+                    </button>
+                </td>
+            </tr>
+        `;
+
+        inputHtml += `
+            <input type="hidden" name="items[${index}][produk_id]" value="${item.produk_id}">
+            <input type="hidden" name="items[${index}][ukuran]" value="${item.ukuran}">
+            <input type="hidden" name="items[${index}][warna]" value="${item.warna}">
+            <input type="hidden" name="items[${index}][qty]" value="${item.qty}">
+        `;
+    });
+
+    cartTable.innerHTML = tableHtml;
+    cartInputs.innerHTML = inputHtml;
+}
+
+function removeCartItem(index) {
+    cart.splice(index, 1);
+    renderCart();
+}
+
+window.addEventListener('DOMContentLoaded', async function () {
+
+    try {
+
+        const response = await fetch('/preferensi/get');
+
+        const result = await response.json();
+
+        const theme = result.theme || 'light';
+        const fontSize = result.font_size || 'medium';
+
+        // APPLY THEME
+        document.documentElement.classList.remove('dark');
+
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
+
+        if (theme === 'system') {
+
+            const prefersDark =
+                window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (prefersDark) {
+                document.documentElement.classList.add('dark');
+            }
+        }
+
+        // APPLY FONT SIZE
+        document.body.classList.remove(
+            'font-small',
+            'font-medium',
+            'font-large'
+        );
+
+        document.body.classList.add('font-' + fontSize);
+
+        // SET SELECT VALUE
+        const tema = document.getElementById('tema');
+        const font = document.getElementById('fontSize');
+
+        if (tema) {
+            tema.value = theme;
+        }
+
+        if (font) {
+            font.value = fontSize;
+        }
+
+    } catch (error) {
+
+        console.log('Gagal load preferensi');
+    }
+});
+
+const fontToggle =
+    document.getElementById('fontToggle');
+
+if(fontToggle){
+
+    const fontLevels = [
+        'small',
+        'medium',
+        'large'
+    ];
+
+    fontToggle.addEventListener(
+        'click',
+
+        async function(){
+
+            let current =
+                getCookie('font_size') || 'medium';
+
+            let index =
+                fontLevels.indexOf(current);
+
+            index++;
+
+            if(index >= fontLevels.length){
+                index = 0;
+            }
+
+            const nextFont =
+                fontLevels[index];
+
+            document.body.classList.remove(
+                'font-small',
+                'font-medium',
+                'font-large'
+            );
+
+            document.body.classList.add(
+                'font-' + nextFont
+            );
+
+            setCookie(
+                'font_size',
+                nextFont,
+                7
+            );
+
+            await fetch(
+                '/preferensi/save',
+                {
+                    method:'POST',
+
+                    headers:{
+                        'Content-Type':'application/json',
+
+                        'X-CSRF-TOKEN':
+                            document.querySelector(
+                                'meta[name="csrf-token"]'
+                            ).content
+                    },
+
+                    body:JSON.stringify({
+                        theme:
+                            getCookie('theme') || 'light',
+
+                        font_size:
+                            nextFont
+                    })
+                }
+            );
+        }
+    );
 }

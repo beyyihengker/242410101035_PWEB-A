@@ -25,6 +25,51 @@
 
     <section class="tabel-box">
         <div class="tabel-header">
+            <h3>Daftar Stok Menipis</h3>
+            <span class="chip">Stok kurang dari 5 pcs</span>
+        </div>
+
+        <div class="tabel-scroll">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produk</th>
+                        <th>Ukuran</th>
+                        <th>Warna</th>
+                        <th>Stok</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse($stokMenipisList as $varian)
+                        <tr>
+                            <td>{{ $varian->produk->nama ?? '-' }}</td>
+                            <td>{{ $varian->ukuran ?: '-' }}</td>
+                            <td>{{ $varian->warna ?: '-' }}</td>
+                            <td>{{ $varian->stok }} pcs</td>
+                            <td class="text-center">
+                                @if($varian->stok == 0)
+                                    <span class="chip status-badge" style="color:#c0392b;">Habis</span>
+                                @else
+                                    <span class="chip status-badge" style="color:#d35400;">Menipis</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" style="text-align:center;">
+                                Tidak ada stok menipis.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="tabel-box">
+        <div class="tabel-header">
             <h3>Daftar Penjualan Terbaru</h3>
             <span class="chip">5 transaksi terakhir</span>
         </div>
@@ -43,21 +88,61 @@
                         <th>Pembayaran</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @forelse($transaksi as $t)
                     <tr>
                         <td>{{ $t->kode_transaksi }}</td>
                         <td>{{ \Carbon\Carbon::parse($t->tanggal)->format('d/m/Y') }}</td>
-                        <td>{{ $t->produk }}</td>
-                        <td>{{ $t->ukuran ?? '-' }}</td>
-                        <td>{{ $t->warna ?? '-' }}</td>
-                        <td>{{ $t->qty }}</td>
+
+                        <td class="multi-item">
+                            @if($t->details->count() > 0)
+                                @foreach($t->details as $d)
+                                    <div>{{ $d->produk }}</div>
+                                @endforeach
+                            @else
+                                {{ $t->produk ?? '-' }}
+                            @endif
+                        </td>
+
+                        <td class="multi-item">
+                            @if($t->details->count() > 0)
+                                @foreach($t->details as $d)
+                                    <div>{{ $d->ukuran ?? '-' }}</div>
+                                @endforeach
+                            @else
+                                {{ $t->ukuran ?? '-' }}
+                            @endif
+                        </td>
+
+                        <td class="multi-item">
+                            @if($t->details->count() > 0)
+                                @foreach($t->details as $d)
+                                    <div>{{ $d->warna ?? '-' }}</div>
+                                @endforeach
+                            @else
+                                {{ $t->warna ?? '-' }}
+                            @endif
+                        </td>
+
+                        <td class="multi-item">
+                            @if($t->details->count() > 0)
+                                @foreach($t->details as $d)
+                                    <div>{{ $d->qty ?? $d->jumlah }}</div>
+                                @endforeach
+                            @else
+                                {{ $t->qty ?? '-' }}
+                            @endif
+                        </td>
+
                         <td>Rp {{ number_format($t->total_harga, 0, ',', '.') }}</td>
-                        <td>{{ $t->pembayaran }}</td>
+                        <td style="text-align:center;">
+                            {{ $t->pembayaran }}
+                        </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="8" style="text-align: center;">Belum ada data transaksi.</td>
+                        <td colspan="8" style="text-align:center;">Belum ada data transaksi.</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -80,12 +165,13 @@
                         <th>Total Terjual</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @forelse($produkTerlaris as $p)
                     <tr>
                         <td>{{ $p['nama'] }}</td>
                         <td>{{ $p['kategori'] ?? '-' }}</td>
-                        <td>{{ $p['terjual'] }}</td>
+                        <td style="text-align:center;">{{ $p['terjual'] }}</td>
                     </tr>
                     @empty
                     <tr>
@@ -102,7 +188,7 @@
     <div class="section-heading">
         <div class="section-title-wrap">
             <div>
-                <h3>Trend Fashion BeysWear</h3>
+                <h3>Trend Fashion</h3>
                 <p>Produk yang sedang banyak diminati</p>
             </div>
         </div>

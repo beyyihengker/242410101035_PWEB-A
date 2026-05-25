@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Produk;
 use App\Models\Transaksi;
 use App\Models\ProdukVarian;
+use App\Models\DetailTransaksi;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
@@ -33,34 +34,59 @@ class DashboardController extends Controller
             'totalItem' => Produk::query()->count(),
             'totalPenjualan' => Transaksi::query()->where('status', 'berhasil')->sum('total_harga'),
             'stokMenipis' => ProdukVarian::query()->where('stok', '<', 5)->count(),
-            'totalTerjual' => Transaksi::query()->where('status', 'berhasil')->sum('qty'),
+            'totalTerjual' => DetailTransaksi::query()->whereHas('transaksi', function ($q) {$q->where('status', 'berhasil');})->sum('qty'),
         ];
 
-        $transaksi = Transaksi::query()
+        $transaksi = Transaksi::with('details')
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
-        $produkTerlaris = Transaksi::query()
-            ->select('produk', DB::raw('SUM(qty) as terjual'))
-            ->groupBy('produk')
-            ->orderByDesc('terjual')
-            ->take(2)
-            ->get()
-            ->map(function ($t) {
-                $produk = Produk::query()->where('nama', '=', $t->produk)->first();
+            $produkTerlarisBaru = DetailTransaksi::query()
+                ->select('produk', DB::raw('SUM(qty) as terjual'))
+                ->whereHas('transaksi', function ($q) {
+                    $q->where('status', 'berhasil');
+                })
+                ->groupBy('produk')
+                ->get();
 
-                return [
-                    'nama' => $t->produk,
-                    'kategori' => $produk ? $produk->kategori : '-',
-                    'terjual' => $t->terjual,
-                ];
-            });
+            $produkTerlarisLama = Transaksi::query()
+                ->select('produk', DB::raw('SUM(qty) as terjual'))
+                ->where('status', 'berhasil')
+                ->whereNotNull('produk')
+                ->groupBy('produk')
+                ->get();
+
+            $produkTerlaris = $produkTerlarisBaru
+                ->concat($produkTerlarisLama)
+                ->groupBy('produk')
+                ->map(function ($items, $namaProduk) {
+
+                    $produk = Produk::query()
+                        ->where('nama', '=', $namaProduk)
+                        ->first();
+
+                    return [
+                        'nama' => $namaProduk,
+                        'kategori' => $produk ? $produk->kategori : '-',
+                        'terjual' => $items->sum('terjual'),
+                    ];
+                })
+                ->sortByDesc('terjual')
+                ->take(2)
+                ->values();
+
+            $stokMenipisList = ProdukVarian::with('produk')
+            ->where('stok', '<', 5)
+            ->orderBy('stok', 'asc')
+            ->take(5)
+            ->get();
 
         return view('dashboard', [
             'statistik'      => $statistik,
             'transaksi'      => $transaksi,
             'produkTerlaris' => $produkTerlaris,
+            'stokMenipisList' => $stokMenipisList,
             'visit'          => session('visit_count'),
             'first'          => session('first_visit'),
             'last'           => session('last_visit'),

@@ -152,13 +152,13 @@
                             <td>{{ $varian->ukuran ?: '-' }}</td>
                             <td>{{ $varian->warna ?: '-' }}</td>
                             <td>{{ $varian->stok }} pcs</td>
-                            <td>
+                            <td class="status-cell">
                                 @if($varian->stok == 0)
-                                    <span class="chip" style="color:#c0392b;">Habis</span>
+                                    <span class="chip status-badge" style="color:#c0392b;">Habis</span>
                                 @elseif($varian->stok < 5)
-                                    <span class="chip" style="color:#d35400;">Menipis</span>
+                                    <span class="chip status-badge" style="color:#d35400;">Menipis</span>
                                 @else
-                                    <span class="chip" style="color:#1e8449;">Aman</span>
+                                    <span class="chip status-badge" style="color:#1e8449;">Aman</span>
                                 @endif
                             </td>
                         </tr>

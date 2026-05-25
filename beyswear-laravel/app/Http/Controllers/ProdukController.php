@@ -7,9 +7,26 @@ use Illuminate\Http\Request;
 
 class ProdukController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $produk = Produk::with('varians')->orderBy('kode', 'asc')->paginate(10);
+        $produk = Produk::with('varians')
+            ->when($request->filled('kode'), function ($query) use ($request) {
+                $query->where('kode', 'LIKE', '%' . $request->kode . '%');
+            })
+            ->when($request->filled('nama'), function ($query) use ($request) {
+                $query->where('nama', 'LIKE', '%' . $request->nama . '%');
+            })
+            ->when($request->filled('kategori'), function ($query) use ($request) {
+                $query->where('kategori', $request->kategori);
+            })
+            ->when($request->filled('ukuran'), function ($query) use ($request) {
+                $query->whereHas('varians', function ($varian) use ($request) {
+                    $varian->where('ukuran', $request->ukuran);
+                });
+            })
+            ->orderBy('created_at', 'asc')
+            ->paginate(10)
+            ->withQueryString();
 
         return view('produk.index', compact('produk'));
     }
@@ -25,7 +42,7 @@ class ProdukController extends Controller
         $validated = $request->validate([
             'kode' => 'required|unique:produks,kode',
             'nama' => 'required|min:3',
-            'kategori' => 'required|in:Kemeja,Celana,Dress,Outer / Jaket,Aksesori',
+            'kategori' => 'required|in:Atasan,Bawahan,Dress,Outer / Jaket,Aksesori',
             'harga' => 'required|numeric|min:1',
             'foto' => 'nullable|image|mimes:jpg,png|max:2048'
         ]);
@@ -38,6 +55,8 @@ class ProdukController extends Controller
             $validated['foto'] = $path;
         }
 
+        $validated['tersedia'] = true;
+        
         Produk::create($validated);
 
         return redirect()
@@ -62,7 +81,7 @@ class ProdukController extends Controller
         $validated = $request->validate([
             'kode' => 'required|unique:produks,kode,' . $produk->id,
             'nama' => 'required|min:3',
-            'kategori' => 'required|in:Kemeja,Celana,Dress,Outer / Jaket,Aksesori',
+            'kategori' => 'required|in:Atasan,Bawahan,Dress,Outer / Jaket,Aksesori',
             'harga' => 'required|numeric|min:1',
             'foto' => 'nullable|image|mimes:jpg,png|max:2048'
         ]);
@@ -89,6 +108,26 @@ class ProdukController extends Controller
         $produk->delete();
 
         return redirect()->route('produk.index')->with('success', 'Produk  berhasil dihapus.');
+    }
+
+    public function trash()
+    {
+        $produk = Produk::onlyTrashed()
+            ->orderBy('deleted_at', 'desc')
+            ->paginate(10);
+
+        return view('produk.trash', compact('produk'));
+    }
+
+    public function restore($id)
+    {
+        $produk = Produk::onlyTrashed()->findOrFail($id);
+
+        $produk->restore();
+
+        return redirect()
+            ->route('produk.trash')
+            ->with('success', 'Produk berhasil dikembalikan.');
     }
 
     public function search(Request $request)

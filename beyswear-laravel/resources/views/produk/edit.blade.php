@@ -28,8 +28,8 @@
             <div class="form-grup">
                 <select name="kategori">
                     <option value="">Pilih Kategori</option>
-                    <option value="Kemeja" {{ old('kategori', $produk->kategori) == 'Kemeja' ? 'selected' : '' }}>Kemeja</option>
-                    <option value="Celana" {{ old('kategori', $produk->kategori) == 'Celana' ? 'selected' : '' }}>Celana</option>
+                    <option value="Atasan" {{ old('kategori', $produk->kategori) == 'Atasan' ? 'selected' : '' }}>Atasan</option>
+                    <option value="Bawahan" {{ old('kategori', $produk->kategori) == 'Bawahan' ? 'selected' : '' }}>Bawahan</option>
                     <option value="Dress" {{ old('kategori', $produk->kategori) == 'Dress' ? 'selected' : '' }}>Dress</option>
                     <option value="Outer / Jaket" {{ old('kategori', $produk->kategori) == 'Outer / Jaket' ? 'selected' : '' }}>Outer / Jaket</option>
                     <option value="Aksesori" {{ old('kategori', $produk->kategori) == 'Aksesori' ? 'selected' : '' }}>Aksesori</option>

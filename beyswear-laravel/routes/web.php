@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Produk;
 use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProdukController;
@@ -11,7 +12,16 @@ use App\Http\Controllers\PreferensiController;
 use Illuminate\Support\Facades\Route;
 
 // 1. Landing Page (Bisa diakses siapa saja)
-Route::get('/', function () {return view('welcome');});
+Route::get('/', function () {
+
+    $produk = Produk::with('varians')
+    ->where('tersedia', true)
+    ->orderBy('created_at', 'desc')
+    ->take(12)
+    ->get();
+
+    return view('welcome', ['produk' => $produk]);
+});
 
 // 2. Semua rute di bawah ini HARUS LOGIN dulu
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -23,7 +33,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profil', [ProfilController::class, 'index'])->name('profil');
     Route::patch('/profil', [ProfilController::class, 'update'])->name('profile.update');
     Route::patch('/profil/password', [ProfilController::class, 'updatePassword'])->name('profile.password');
-    Route::view('/preferensi', 'preferensi')->name('preferensi');
     Route::post('/preferensi/save', [PreferensiController::class, 'save'])->name('preferensi.save');
     Route::get('/preferensi/get',[PreferensiController::class, 'getPreference'])->name('preferensi.get');
     Route::post('/varian',[ProdukVarianController::class, 'store'])->name('varian.store');
@@ -32,9 +41,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role:admin,kasir')->group(function () {
         Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan');
         Route::post('/penjualan', [PenjualanController::class, 'store'])->name('penjualan.store');
+        Route::get('/penjualan/{transaksi}/struk', [PenjualanController::class, 'struk'])->name('penjualan.struk');
         Route::patch('/penjualan/{transaksi}/cancel', [PenjualanController::class, 'cancel'])->name('penjualan.cancel');
         Route::get('/produk', [ProdukController::class, 'index'])->name('produk.index');
         Route::get('/search-produk', [ProdukController::class, 'search']);
+        Route::get('/produk-trash', [ProdukController::class, 'trash'])->name('produk.trash');
+        Route::patch('/produk/{id}/restore', [ProdukController::class, 'restore'])->name('produk.restore');
     });
 
     // KHUSUS ADMIN

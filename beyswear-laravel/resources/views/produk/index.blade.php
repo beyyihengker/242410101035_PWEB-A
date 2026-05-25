@@ -4,48 +4,71 @@
 
 <section class="form-box">
     <h3 class="seksi-label" id="lbl-form">Cari Data Produk</h3>
-    <div class="form-row">
 
-        <div class="form-grup">
-            <input type="text" id="kodeProduk" placeholder="cth. BRG001">
+    <form action="{{ route('produk.index') }}" method="GET">
+        <div class="form-row">
+
+            <div class="form-grup">
+                <input type="text"
+                    name="kode"
+                    value="{{ request('kode') }}"
+                    placeholder="cth. BRG001">
+            </div>
+
+            <div class="form-grup">
+                <input type="text"
+                    name="nama"
+                    value="{{ request('nama') }}"
+                    placeholder="cth. Nevadi Ki">
+            </div>
+
+            <div class="form-grup">
+                <select name="ukuran">
+                    <option value="">Ukuran</option>
+                    <option value="S" {{ request('ukuran') == 'S' ? 'selected' : '' }}>S</option>
+                    <option value="M" {{ request('ukuran') == 'M' ? 'selected' : '' }}>M</option>
+                    <option value="L" {{ request('ukuran') == 'L' ? 'selected' : '' }}>L</option>
+                    <option value="XL" {{ request('ukuran') == 'XL' ? 'selected' : '' }}>XL</option>
+                </select>
+            </div>
+
+            <div class="form-grup">
+                <select name="kategori">
+                    <option value="">Kategori</option>
+                    <option value="Atasan" {{ request('kategori') == 'Atasan' ? 'selected' : '' }}>Atasan</option>
+                    <option value="Bawahan" {{ request('kategori') == 'Bawahan' ? 'selected' : '' }}>Bawahan</option>
+                    <option value="Dress" {{ request('kategori') == 'Dress' ? 'selected' : '' }}>Dress</option>
+                    <option value="Outer / Jaket" {{ request('kategori') == 'Outer / Jaket' ? 'selected' : '' }}>Outer / Jaket</option>
+                    <option value="Aksesori" {{ request('kategori') == 'Aksesori' ? 'selected' : '' }}>Aksesori</option>
+                </select>
+            </div>
+
+            <button class="btn btn-primer" type="submit">
+                Cari
+            </button>
+
+            <a href="{{ route('produk.index') }}" class="btn btn-sekunder">
+                Reset
+            </a>
         </div>
-
-        <div class="form-grup">
-            <input type="text" id="namaProduk" placeholder="cth. Nevadi Ki">
-        </div>
-
-        <div class="form-grup">
-            <select id="cari-ukuran">
-            <option value="">Ukuran</option>
-            <option>S</option>
-            <option>M</option>
-            <option>L</option>
-            <option>XL</option>
-            </select>
-        </div>
-
-        <div class="form-grup">
-            <select id="cari-kategori">
-            <option value="">Kategori</option>
-                <option>Kemeja</option>
-                <option>Celana</option>
-                <option>Dress</option>
-                <option>Outer / Jaket</option>
-                <option>Aksesori</option>
-            </select>
-        </div>
-
-        <button class="btn btn-primer" type="button">Cari</button>
-    </div>
+    </form>
 </section>
 
 <section class="form-box">
     <div class="tabel-header">
         <h1>Data Produk</h1>
 
-        <a href="{{ route('produk.create') }}" class="btn-primary">
-            + Tambah Produk
-        </a>
+        <div class="header-actions">
+            <a href="{{ route('produk.trash') }}" class="header-link">
+                Produk Terhapus
+            </a>
+
+            <span class="header-divider">|</span>
+
+            <a href="{{ route('produk.create') }}" class="header-link">
+                + Tambah Produk
+            </a>
+        </div>
     </div>
 
     <div class="tabel-scroll">

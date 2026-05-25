@@ -34,9 +34,24 @@
                         @if(Auth::user()->role === 'admin')
                             <a href="{{ route('users.index') }}" class="nav-dropdown-item">Manajemen User</a>
                         @endif
-                        <button id="darkToggle" type="button" class="theme-switch">
-                            <span class="theme-icon">☀</span>
-                        </button>
+                        <div class="nav-pref-wrap">
+
+                            <button id="darkToggle"
+                                type="button"
+                                class="theme-switch">
+
+                                <span class="theme-icon">☀</span>
+                            </button>
+
+                            <button
+                                id="fontToggle"
+                                type="button"
+                                class="pref-btn">
+
+                                Aa
+                            </button>
+
+                        </div>
                         <div class="nav-dropdown-divider"></div>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -47,6 +62,12 @@
                     </div>
                 </li>
             </ul>
+
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         @endauth
     </div>
 </nav>

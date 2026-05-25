@@ -15,8 +15,8 @@ return new class extends Migration
             $table->string('nama', 100);
 
             $table->enum('kategori', [
-                'Kemeja',
-                'Celana',
+                'Atasan',
+                'Bawahan',
                 'Dress',
                 'Outer / Jaket',
                 'Aksesori'

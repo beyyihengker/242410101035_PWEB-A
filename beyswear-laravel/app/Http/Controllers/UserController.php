@@ -38,10 +38,10 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
-            'role' => ['required', 'in:admin,kasir'],
+            'no_hp' => ['nullable', 'string', 'max:20'],
         ]);
 
-        $user->update($request->only('name', 'email', 'role'));
+        $user->update($request->only('name', 'email', 'no_hp'));
 
         if ($request->filled('password')) {
             $user->update(['password' => Hash::make($request->password)]);
@@ -52,16 +52,22 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->id === auth()->id()) {
-            return back()->with('error', 'Kamu tidak bisa menghapus akunmu sendiri.');
+        if ($user->id === Auth::id()) {
+            return redirect()
+                ->back()
+                ->with('error', 'Kamu tidak bisa menghapus akunmu sendiri.');
         }
 
         if ($user->role === 'admin') {
-            return back()->with('error', 'Akun admin tidak boleh dihapus.');
+            return redirect()
+                ->back()
+                ->with('error', 'Akun admin tidak boleh dihapus.');
         }
 
         $user->delete();
 
-        return back()->with('success', 'User berhasil dihapus.');
+        return redirect()
+            ->back()
+            ->with('success', 'User berhasil dihapus.');
     }
 }

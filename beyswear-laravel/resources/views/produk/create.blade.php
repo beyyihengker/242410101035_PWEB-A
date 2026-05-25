@@ -24,8 +24,8 @@
                 <div class="form-grup">
                     <select name="kategori">
                         <option value="">Pilih Kategori</option>
-                        <option value="Kemeja">Kemeja</option>
-                        <option value="Celana">Celana</option>
+                        <option value="Atasan">Atasan</option>
+                        <option value="Bawahan">Bawahan</option>
                         <option value="Dress">Dress</option>
                         <option value="Outer / Jaket">Outer / Jaket</option>
                         <option value="Aksesori">Aksesori</option>

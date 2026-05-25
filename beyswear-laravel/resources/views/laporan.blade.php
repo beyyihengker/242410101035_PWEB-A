@@ -34,6 +34,7 @@
 
     </form>
 
+    <br>
     {{-- TABEL LAPORAN --}}
     <section class="tabel-box">
         <div class="tabel-header">

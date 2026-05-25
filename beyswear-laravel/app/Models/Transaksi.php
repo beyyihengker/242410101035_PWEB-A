@@ -1,29 +1,22 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\DetailTransaksi;
 
 class Transaksi extends Model
 {
     protected $fillable = [
         'kode_transaksi',
-        'produk',
-        'ukuran',
-        'warna',
-        'qty',
         'tanggal',
         'total_harga',
         'pembayaran',
         'status',
     ];
 
-    public function produk()
+    public function details()
     {
-        return $this->belongsTo(Produk::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(DetailTransaksi::class);
     }
 }
