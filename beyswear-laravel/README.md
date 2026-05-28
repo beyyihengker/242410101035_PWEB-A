@@ -138,15 +138,15 @@ http://127.0.0.1:8000
 ## Admin
 
 ```txt
-Email    : admin@beyswear.com
-Password : password
+Email    : berlianaprilly24@gmail.com
+Password : berli123
 ```
 
 ## Kasir
 
 ```txt
-Email    : kasir@beyswear.com
-Password : password
+Email    : admin123@gmail.com
+Password : admin123
 ```
 
 ---
