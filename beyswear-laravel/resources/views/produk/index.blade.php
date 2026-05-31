@@ -5,6 +5,7 @@
 <section class="form-box">
     <h3 class="seksi-label" id="lbl-form">Cari Data Produk</h3>
 
+    {{-- Form filter produk menggunakan method GET agar parameter pencarian muncul di URL --}}
     <form action="{{ route('produk.index') }}" method="GET">
         <div class="form-row">
 
@@ -23,6 +24,8 @@
             </div>
 
             <div class="form-grup">
+
+                {{-- Filter ukuran akan memanfaatkan relasi produk -> varians di controller --}}
                 <select name="ukuran">
                     <option value="">Ukuran</option>
                     <option value="S" {{ request('ukuran') == 'S' ? 'selected' : '' }}>S</option>
@@ -30,9 +33,12 @@
                     <option value="L" {{ request('ukuran') == 'L' ? 'selected' : '' }}>L</option>
                     <option value="XL" {{ request('ukuran') == 'XL' ? 'selected' : '' }}>XL</option>
                 </select>
+
             </div>
 
             <div class="form-grup">
+
+                {{-- Daftar kategori harus konsisten dengan data master produk --}}
                 <select name="kategori">
                     <option value="">Kategori</option>
                     <option value="Atasan" {{ request('kategori') == 'Atasan' ? 'selected' : '' }}>Atasan</option>
@@ -41,12 +47,14 @@
                     <option value="Outer / Jaket" {{ request('kategori') == 'Outer / Jaket' ? 'selected' : '' }}>Outer / Jaket</option>
                     <option value="Aksesori" {{ request('kategori') == 'Aksesori' ? 'selected' : '' }}>Aksesori</option>
                 </select>
+
             </div>
 
             <button class="btn btn-primer" type="submit">
                 Cari
             </button>
 
+            {{-- Menghapus seluruh parameter filter yang sedang aktif --}}
             <a href="{{ route('produk.index') }}" class="btn btn-sekunder">
                 Reset
             </a>
@@ -59,6 +67,8 @@
         <h1>Data Produk</h1>
 
         <div class="header-actions">
+
+            {{-- Menampilkan data produk yang terkena soft delete --}}
             <a href="{{ route('produk.trash') }}" class="header-link">
                 Produk Terhapus
             </a>
@@ -88,6 +98,7 @@
 
                 <tbody>
 
+                    {{-- Data berasal dari pagination ProdukController --}}
                     @foreach($produk as $item)
 
                     <tr>
@@ -98,6 +109,7 @@
 
                             @if($item->foto)
 
+                                {{-- File gambar disimpan pada storage/public --}}
                                 <img src="{{ asset('storage/' . $item->foto) }}" width="80" class="foto-produk">
 
                             @else
@@ -117,6 +129,7 @@
 
                         <td>
 
+                            {{-- Aksi CRUD produk --}}
                             <div class="aksi-btn">
 
                                 <a href="{{ route('produk.show', $item->id) }}" class="btn btn-primer">Detail</a>
@@ -128,6 +141,7 @@
                                     @csrf
                                     @method('DELETE')
 
+                                    {{-- Penghapusan menggunakan soft delete, bukan menghapus permanen dari database --}}
                                     <button type="submit" class="btn btn-primer" style="background:#c0392b;" onclick="return confirm('Yakin hapus produk?')">Hapus</button>
 
                                 </form>
@@ -146,6 +160,7 @@
 
     </div>
 
+        {{-- Pagination mempertahankan parameter filter melalui withQueryString() di controller --}}
         <div class="pagination-box">
             {{ $produk->links() }}
         </div>

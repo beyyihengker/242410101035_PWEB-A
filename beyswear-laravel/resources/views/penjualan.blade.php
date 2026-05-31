@@ -7,6 +7,7 @@
 <section class="form-box">
     <h3 class="seksi-label" id="lbl-form">Cari Data Transaksi</h3>
 
+    {{-- Filter transaksi menggunakan method GET agar parameter pencarian tetap muncul di URL --}}
     <form action="{{ route('penjualan') }}" method="GET">
         <div class="form-row">
 
@@ -38,6 +39,7 @@
                 Cari
             </button>
 
+            {{-- Menghapus seluruh parameter filter yang sedang aktif --}}
             <a href="{{ route('penjualan') }}" class="btn btn-sekunder">
                 Reset
             </a>
@@ -48,6 +50,7 @@
 <section class="form-box">
     <h3 class="seksi-label">Tambah Transaksi</h3>
 
+    {{-- Area pemilihan item sebelum dimasukkan ke keranjang transaksi --}}
     <div class="form-row">
         <div class="form-grup">
             <input type="text" id="kode" placeholder="Kode Barang" readonly>
@@ -87,9 +90,11 @@
         </div>
     </div>
 
+    {{-- Form ini mengirim seluruh item yang sudah masuk cart ke PenjualanController --}}
     <form action="{{ route('penjualan.store') }}" method="POST" style="margin-top:20px;">
         @csrf
 
+        {{-- Hidden input cart akan dibuat melalui JavaScript agar data item terkirim ke server --}}
         <div id="cartInputs"></div>
 
         <div class="form-row">
@@ -122,6 +127,7 @@
                     </tr>
                 </thead>
 
+                {{-- Isi cart transaksi ditampilkan melalui JavaScript --}}
                 <tbody id="cartTable">
                     <tr>
                         <td colspan="7" style="text-align:center;">
@@ -163,11 +169,13 @@
                     <td>{{ $t->kode_transaksi }}</td>
 
                     <td>
+                        {{-- Mendukung struktur transaksi baru multi-item dari detail_transaksi --}}
                         @if($t->details->count() > 0)
                             @foreach($t->details as $d)
                                 <div>{{ $d->produk }}</div>
                             @endforeach
                         @else
+                            {{-- Fallback untuk data transaksi lama --}}
                             {{ $t->produk ?? '-' }}
                         @endif
                     </td>
@@ -207,6 +215,7 @@
                     <td>{{ $t->pembayaran }}</td>
 
                     <td>
+                        {{-- Transaksi dibatalkan tidak dihapus agar riwayat tetap tersimpan --}}
                         @if($t->status === 'dibatalkan')
                             <span class="badge" style="background:#fdecea;color:#c0392b;">Dibatalkan</span>
                         @else
@@ -217,10 +226,11 @@
                     <td class="aksi-btn">
                         <a href="{{ route('penjualan.struk', $t->id) }}"
                             target="_blank"
-                            class="btn btn-sekunder">
+                            class="btn btn-primer">
                             Struk
                         </a>
 
+                        {{-- Pembatalan transaksi akan mengubah status dan mengembalikan stok --}}
                         @if($t->status !== 'dibatalkan')
                             <form action="{{ route('penjualan.cancel', $t->id) }}" method="POST"
                                 onsubmit="return confirm('Batalkan transaksi ini dan kembalikan stok?')">
@@ -247,6 +257,7 @@
 @push('scripts')
 
 <script>
+    // Data produk dan varian dikirim ke JavaScript untuk dropdown ukuran, warna, stok, dan cart.
     window.produkData = @json($produkAll);
 </script>
 

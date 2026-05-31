@@ -9,17 +9,19 @@
                 </p>
             </div>
 
-            <!-- Session Status -->
+            {{-- Menampilkan pesan status setelah request reset password dikirim --}}
             <x-auth-session-status class="mb-4" :status="session('status')" />
 
+            {{-- Form ini memakai route bawaan Laravel Breeze untuk mengirim link reset password --}}
             <form method="POST" action="{{ route('password.email') }}">
                 @csrf
 
-                <!-- Email Address -->
                 <div class="form-grup" style="margin-bottom: 25px;">
                     <label class="sb-label">Email</label>
                     <input id="email" type="email" name="email" :value="old('email')" required autofocus placeholder="email@gmail.com"
                            style="width: 100%; padding: 10px; border: 1px solid #D9CBC2; border-radius: 8px;">
+
+                    {{-- Menampilkan error validasi khusus field email --}}
                     <x-input-error :messages="$errors->get('email')" class="form-err" style="margin-top: 5px;" />
                 </div>
 

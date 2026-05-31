@@ -10,13 +10,18 @@
         <h1>Edit Produk</h1>
     </div>
 
+    {{-- enctype multipart/form-data diperlukan agar foto baru dapat diupload --}}
     <form action="{{ route('produk.update', $produk->id) }}" method="POST" enctype="multipart/form-data" class="form-data">
 
         @csrf
+
+        {{-- Laravel hanya mendukung GET dan POST secara langsung,
+             sehingga PUT disimulasikan menggunakan method spoofing --}}
         @method('PUT')
 
         <div class="form-row">
 
+            {{-- old() digunakan agar input tetap terisi jika validasi gagal --}}
             <div class="form-grup">
                 <input type="text" name="kode" value="{{ old('kode', $produk->kode) }}" placeholder="Masukkan kode produk">
             </div>
@@ -26,6 +31,8 @@
             </div>
 
             <div class="form-grup">
+
+                {{-- Daftar kategori harus konsisten dengan validasi kategori pada ProdukController --}}
                 <select name="kategori">
                     <option value="">Pilih Kategori</option>
                     <option value="Atasan" {{ old('kategori', $produk->kategori) == 'Atasan' ? 'selected' : '' }}>Atasan</option>
@@ -42,7 +49,10 @@
             </div>
 
             <div class="form-grup">
+
+                {{-- Jika tidak memilih file baru, foto lama tetap digunakan oleh controller --}}
                 <input type="file" name="foto">
+
             </div>
 
             <div class="aksi-btn">

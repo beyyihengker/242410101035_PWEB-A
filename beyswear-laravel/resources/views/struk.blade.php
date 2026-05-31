@@ -1,18 +1,28 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Struk {{ $transaksi->kode_transaksi }}</title>
 
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <meta charset="UTF-8">
+
+    <title>
+        Struk {{ $transaksi->kode_transaksi }}
+    </title>
+
+    <link rel="stylesheet"
+        href="{{ asset('css/style.css') }}">
+
 </head>
 
 <body class="struk-page">
 
 <div class="struk">
 
+    {{-- Informasi toko --}}
     <div class="struk-center">
-        <h2 class="struk-title">BeysWear</h2>
+
+        <h2 class="struk-title">
+            BeysWear
+        </h2>
 
         <p class="struk-text">
             Fashion Retail Store
@@ -21,10 +31,12 @@
         <p class="struk-text">
             Jl. Jawa No. 1, Jember
         </p>
+
     </div>
 
     <div class="struk-line"></div>
 
+    {{-- Informasi utama transaksi --}}
     <p class="struk-text">
         Kode: {{ $transaksi->kode_transaksi }}
     </p>
@@ -46,6 +58,7 @@
 
     <div class="struk-line"></div>
 
+    {{-- Daftar item yang dibeli dalam transaksi --}}
     @foreach($transaksi->details as $detail)
 
         <div class="struk-item">
@@ -71,12 +84,14 @@
                 </span>
 
             </div>
+
         </div>
 
     @endforeach
 
     <div class="struk-line"></div>
 
+    {{-- Ringkasan total pembayaran transaksi --}}
     <div class="struk-row struk-total">
 
         <span>Total</span>
@@ -89,6 +104,7 @@
 
     <div class="struk-line"></div>
 
+    {{-- Pesan penutup pada struk --}}
     <div class="struk-center">
 
         <p class="struk-text">
@@ -103,7 +119,9 @@
 
 </div>
 
-<button onclick="window.print()" class="btn btn-primer btn-print">
+{{-- Tombol cetak hanya muncul di halaman browser dan memanggil fitur print bawaan --}}
+<button onclick="window.print()"
+    class="btn btn-primer btn-print">
     Cetak Struk
 </button>
 

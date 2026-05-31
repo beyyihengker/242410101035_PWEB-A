@@ -5,9 +5,12 @@
 @section('content')
 
 <section class="form-box">
+
     <h3 class="seksi-label">Tambah User Baru</h3>
 
+    {{-- Form pembuatan akun kasir baru --}}
     <form action="{{ route('users.store') }}" method="POST">
+
         @csrf
 
         <div class="form-row">
@@ -33,6 +36,7 @@
                     required>
             </div>
 
+            {{-- Role diset otomatis sebagai kasir --}}
             <input type="hidden"
                 name="role"
                 value="kasir">
@@ -50,7 +54,9 @@
             </button>
 
         </div>
+
     </form>
+
 </section>
 
 <section class="form-box">
@@ -62,6 +68,7 @@
     <div class="tabel-scroll">
 
         <table>
+
             <thead>
                 <tr>
                     <th>Nama</th>
@@ -74,10 +81,12 @@
 
             <tbody>
 
+                {{-- Menampilkan seluruh user yang berhasil diambil dari database --}}
                 @foreach($users as $u)
 
-                {{-- ROW UTAMA --}}
+                {{-- Data utama user --}}
                 <tr>
+
                     <td>{{ $u->name }}</td>
                     <td>{{ $u->email }}</td>
                     <td>{{ $u->no_hp }}</td>
@@ -90,12 +99,14 @@
 
                     <td class="aksi-btn">
 
+                        {{-- Menampilkan form edit inline tanpa pindah halaman --}}
                         <button type="button"
                             class="btn btn-primer"
                             onclick="toggleEdit({{ $u->id }})">
                             Edit
                         </button>
 
+                        {{-- Akun admin tidak boleh dihapus --}}
                         @if($u->role !== 'admin')
 
                             <form action="{{ route('users.destroy', $u->id) }}"
@@ -124,14 +135,16 @@
                         @endif
 
                     </td>
+
                 </tr>
 
-                {{-- ROW EDIT --}}
+                {{-- Form edit user yang disembunyikan secara default --}}
                 <tr id="edit-row-{{ $u->id }}"
                     style="display:none; background:#f8f9fb;">
 
                     <td colspan="5">
 
+                        {{-- Update data user menggunakan route users.update --}}
                         <form action="{{ route('users.update', $u->id) }}"
                             method="POST">
 
@@ -166,6 +179,7 @@
                                     Simpan
                                 </button>
 
+                                {{-- Menutup form edit tanpa menyimpan perubahan --}}
                                 <button type="button"
                                     class="btn btn-sekunder"
                                     onclick="toggleEdit({{ $u->id }})">
@@ -177,6 +191,7 @@
                         </form>
 
                     </td>
+
                 </tr>
 
                 @endforeach
@@ -186,6 +201,7 @@
         </table>
 
     </div>
+
 </section>
 
 @endsection

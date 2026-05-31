@@ -16,7 +16,12 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+
+            // Data master produk awal
             ProdukSeeder::class,
+
+            // Data varian dan stok awal produk
+            ProdukVarianSeeder::class,
         ]);
     }
 }

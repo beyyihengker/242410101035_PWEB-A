@@ -7,13 +7,21 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Menambahkan atribut profil pengguna.
+     * no_hp digunakan untuk informasi kontak,
+     * sedangkan jabatan digunakan untuk kebutuhan tampilan/profil
+     * dan tidak berkaitan langsung dengan hak akses sistem.
      */
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
+
+            // Informasi kontak pengguna
             $table->string('no_hp')->nullable();
-            $table->string('jabatan')->nullable(); // Ini bisa berbeda dengan 'role' untuk login
+
+            // Jabatan ditampilkan pada profil pengguna.
+            // Berbeda dengan role yang digunakan untuk otorisasi/login.
+            $table->string('jabatan')->nullable();
         });
     }
 

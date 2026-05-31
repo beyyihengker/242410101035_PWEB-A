@@ -12,41 +12,26 @@ class ProdukSeeder extends Seeder
      */
     public function run(): void
     {
+        // Data master produk awal.
+        // Digunakan untuk menyediakan data contoh setelah proses seeding
+        // sehingga aplikasi dapat langsung digunakan tanpa input produk manual.
+        \App\Models\Produk::create([
+            'kode' => 'BRG001',
+            'nama' => 'Nevadi Ki Basic Tee',
+            'kategori' => 'Atasan',
+            'harga' => 110000,
+            'foto' => null,
+            'tersedia' => true,
+        ]);
 
-    \App\Models\Produk::create([
-        'kode' => 'BRG001',
-        'nama' => 'Nevadi Ki Basic Tee',
-        'kategori' => 'Kemeja',
-        'tersedia' => true
-    ]);
-
-    \App\Models\Produk::create([
-        'kode' => 'BRG002',
-        'nama' => 'Celana Chino',
-        'kategori' => 'Celana',
-        'tersedia' => true
-    ]);
-
-    \App\Models\Produk::create([
-        'kode' => 'BRG003',
-        'nama' => 'Midi Dress Floral',
-        'kategori' => 'Dress',
-        'tersedia' => true
-    ]);
-
-    \App\Models\Produk::create([
-        'kode' => 'BRG004',
-        'nama' => 'Fissol Raqueline Watch',
-        'kategori' => 'Aksesori',
-        'tersedia' => true
-    ]);
-
-    \App\Models\Produk::create([
-        'kode' => 'BRG005',
-        'nama' => 'Cardigan Rajut',
-        'kategori' => 'Outer / Jaket',
-        'tersedia' => true
-    ]);
-
+        // Produk contoh kategori bawahan.
+        \App\Models\Produk::create([
+            'kode' => 'BRG003',
+            'nama' => 'Celana Chino',
+            'kategori' => 'Bawahan',
+            'harga' => 150000,
+            'foto' => null,
+            'tersedia' => true,
+        ]);
     }
 }
