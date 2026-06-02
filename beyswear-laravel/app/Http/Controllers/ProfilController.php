@@ -29,7 +29,7 @@ class ProfilController extends Controller
         // Validasi data profil
         $request->validate([
             'name'  => 'required|string|max:100',
-            'no_hp' => 'required|string|max:20',
+            'no_hp' => 'nullable|regex:/^[0-9]+$/',
             'email' => 'required|email|unique:users,email,' . $user->id,
         ], [
 

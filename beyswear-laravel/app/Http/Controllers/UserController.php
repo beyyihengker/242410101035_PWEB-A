@@ -27,6 +27,8 @@ class UserController extends Controller
             // Email wajib unik agar tidak ada akun dengan email yang sama
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
 
+            'no_hp' => ['required', 'regex:/^[0-9]+$/', 'max:15'],
+
             // Password menggunakan aturan default Laravel
             'password' => ['required', Rules\Password::defaults()],
 
@@ -60,7 +62,7 @@ class UserController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email,'.$user->id],
 
             // Nomor HP boleh kosong
-            'no_hp' => ['nullable', 'string', 'max:20'],
+            'no_hp' => ['required', 'regex:/^[0-9]+$/', 'max:15'],
         ]);
 
         // Update data utama user

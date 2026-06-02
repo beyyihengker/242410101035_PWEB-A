@@ -95,7 +95,10 @@
 
                         <input type="text"
                             name="no_hp"
-                            value="{{ old('no_hp', $user->no_hp) }}">
+                            value="{{ old('no_hp', $user->no_hp) }}"
+                            inputmode="numeric"
+                            pattern="[0-9]+"
+                            maxlength="15">
 
                         @error('no_hp')
                             <p class="form-err">{{ $message }}</p>

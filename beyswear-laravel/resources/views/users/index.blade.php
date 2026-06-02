@@ -8,6 +8,14 @@
 
     <h3 class="seksi-label">Tambah User Baru</h3>
 
+    @if ($errors->any())
+        <div class="alert alert-error">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
+
     {{-- Form pembuatan akun kasir baru --}}
     <form action="{{ route('users.store') }}" method="POST">
 
@@ -33,6 +41,9 @@
                 <input type="text"
                     name="no_hp"
                     placeholder="No HP"
+                    inputmode="numeric"
+                    pattern="[0-9]+"
+                    maxlength="15"
                     required>
             </div>
 
